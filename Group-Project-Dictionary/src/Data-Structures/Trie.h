@@ -11,6 +11,7 @@ enum Trie_State {
 	invalid_charater,
 	duplicated
 };
+// Node of Trie, a Node has a data and branch to another nodes in Trie.
 template<class DataType>
 struct TrieNode {
 	DataType data;
@@ -19,22 +20,75 @@ struct TrieNode {
 	~TrieNode();
 };
 
+// Trie
 template<class DataType>
 struct Trie {
-	int alphaID[256];
-	int numNext;
-	DataType defaultData;
-	TrieNode<DataType>* root;
+
+	int alphaID[256];//ID of the charater using in trie
+	
+	int numNext; //Number of branch of each node
+
+
+	DataType defaultData;	
+	/*
+		A default data for the type of data that we use in Trie
+		If we use a pointer type this should be nullptr
+		If we use integer this should be 0
+	*/
+	
+	TrieNode<DataType>* root; //Root node of Trie
+
 	Trie(const std::string& str, const DataType& _defaultData);
-	~Trie();
+	/*
+		Constructor
+		Initialize Trie: Trie<DataType> trie;
+		example: Trie<Word*> *trie;
+		trie = new Trie(A string of characters use in trie, nullptr);
+		defaultData = nullptr because we use pointer of Word*
+	*/
+	
+	~Trie(); // destructor, use for delete
+
 
 	Trie_State insert(const std::string& str, const DataType& data);
+	/*
+		Insert a string into trie, if trie already has exactly the same string before,
+		then it will return duplicated
+		If insert success it will return success
+		else it will return invalid charater.
+	*/
+
 	Trie_State find(const std::string& str, DataType& data);
+	/*
+		Find a string str in trie
+		Return success if there is str in trie, assign the data of the string in the trie into data.
+		else return non_exist
+	*/
+
 	Trie_State remove(const std::string& str);
+	/*
+		Delete a string str in trie
+		Return success if there is str in trie, assign the default data into the data inside the trie. (nullptr)
+		else return non_exist
+	*/
 
 	void bfs(TrieNode<DataType>* cur, std::vector<DataType>& result, int searchNumber);
+	/*
+		bfs for searchByKey function.
+	*/
+
 	std::vector<DataType> searchByKey(const std::string& str);
+	/*
+		Using bfs to search, SEARCH_LIMIT is up to 30 strings.
+		Search by a prefix str of some string in the trie.
+		If exist, return vector has data of the string having prefix str in the trie.
+		else return empty vector
+	*/
+
 	void deallocate(TrieNode<DataType>*& cur);
+	/*
+		use for delete entire trie after using.
+	*/
 };
 
 template<class DataType>
