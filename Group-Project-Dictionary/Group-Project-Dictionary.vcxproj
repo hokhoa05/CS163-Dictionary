@@ -27,6 +27,12 @@
     <ClInclude Include="src\Data-Structures\Structures.h" />
     <ClInclude Include="src\Data-Structures\Trie.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="data\emojis\Data.txt" />
+    <Text Include="data\eng-eng\Data.txt" />
+    <Text Include="data\eng-vie\Data.txt" />
+    <Text Include="data\slang\Data.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

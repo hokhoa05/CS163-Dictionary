@@ -33,4 +33,10 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="data\eng-eng\Data.txt" />
+    <Text Include="data\emojis\Data.txt" />
+    <Text Include="data\eng-vie\Data.txt" />
+    <Text Include="data\slang\Data.txt" />
+  </ItemGroup>
 </Project>
