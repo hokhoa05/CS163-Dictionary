@@ -4,6 +4,7 @@
 #include "Data-Structures/Static.h"
 #include "Data-Structures/Structures.h"
 #include "Data-Structures/Trie.h"
+#include "UI/menu.h"
 
 int main() {
 	Dict* data = new Dict();
@@ -15,5 +16,6 @@ int main() {
 	for (auto s : v)
 		std::cout << s->data << '\n';
 	delete data;
+	mainMenu();
 	return 0;
 }
