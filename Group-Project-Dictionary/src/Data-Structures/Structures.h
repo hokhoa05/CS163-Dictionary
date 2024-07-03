@@ -1,7 +1,15 @@
 #pragma once
+#include <fstream>
+#include <sstream>
+#include "Trie.h"
 
 struct Word;
 struct Definition;
+
+void loadWordsToTrie(const std::string& filename, Trie<Word*>*& trie);
+
+
+
 struct Word {
 	bool isFavorite; //Check if Word is in favorite list
 	std::string data; //The word
