@@ -4,6 +4,7 @@
 #include "Data-Structures/Static.h"
 #include "Data-Structures/Structures.h"
 #include "Data-Structures/Trie.h"
+#include "UI/menu.h"
 
 int main() {
 	Word* s1 = new Word("abcdef");
@@ -24,5 +25,6 @@ int main() {
 	delete s3;
 	s3 = nullptr;
 	delete trie;
+	mainMenu();
 	return 0;
 }

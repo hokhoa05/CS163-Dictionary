@@ -63,6 +63,6 @@ void openSubWin();
 void update2(int& cooldown, sf::CircleShape& shape, sf::RenderWindow& window);
 void suggest(DropdownMenu& dropdown);
 
-int menu();
+int mainMenu();
 
 

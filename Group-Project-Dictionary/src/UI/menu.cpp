@@ -181,7 +181,7 @@ void suggest(DropdownMenu& dropdown)
     dropdown.addButton("Word 5");
 }
 
-int menu()
+int mainMenu()
 {
     sf::RenderWindow window(sf::VideoMode(800, 800), "App1", sf::Style::Default);
 
