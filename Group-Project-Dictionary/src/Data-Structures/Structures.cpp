@@ -56,7 +56,7 @@ int editDistance(const std::string& a, const std::string& b) {
 			if (j == 0)
 				dp[i][j] = i;
 			if ((i != 0) && (j != 0)) {
-				if (a[i - 1] == b[j - 1])
+				if (tolower(a[i - 1]) == tolower(b[j - 1]))
 					dp[i][j] = dp[i - 1][j - 1];
 				else
 					dp[i][j] = std::min({ dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1] }) + 1;
