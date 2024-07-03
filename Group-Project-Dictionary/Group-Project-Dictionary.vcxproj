@@ -21,11 +21,13 @@
   <ItemGroup>
     <ClCompile Include="src\Data-Structures\Structures.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\UI\menu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Data-Structures\Static.h" />
     <ClInclude Include="src\Data-Structures\Structures.h" />
     <ClInclude Include="src\Data-Structures\Trie.h" />
+    <ClInclude Include="src\UI\menu.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\emojis\Data.txt" />
