@@ -3,8 +3,8 @@
 #include<string>
 #include<vector>
 #include<queue>
-
-#include "Static.h";
+#include<math.h>
+#include "Static.h"
 enum Trie_State {
 	success,
 	non_exist,
@@ -15,11 +15,17 @@ enum Trie_State {
 template<class DataType>
 struct TrieNode {
 	DataType data;
-	std::vector<TrieNode<DataType>*> pNext;
-	TrieNode(const int &numNext, const DataType &data);
-	~TrieNode();
+	TrieNode<DataType>** pNext;
+	TrieNode(int numNext, DataType data);
 };
-
+template<class DataType>
+TrieNode<DataType>::TrieNode(int numNext, DataType data) {
+	this->data = data;
+	pNext = new TrieNode<DataType> *[numNext];
+	for (int i = 0; i < numNext; ++i) {
+		pNext[i] = nullptr;
+	}
+}
 // Trie
 template<class DataType>
 struct Trie {
@@ -89,8 +95,33 @@ struct Trie {
 	/*
 		use for delete entire trie after using.
 	*/
+	void resetCnt(TrieNode<DataType>* root);
+	void clear(TrieNode<DataType>* root);
+	void calc(TrieNode<DataType>* root, double poss);
+	void resetCnt(); //reset cnt values
+	void clear(); //reset all Trie
+	void calc(); //use dp on trie to calculate the possibility the words in the definition
+	void traverse(TrieNode<DataType>* cur, const std::string &str);
+	void traverse(const std::string& str);
 };
 
+template <class DataType>
+Trie<DataType>::Trie(const std::string& str, const DataType& _defaultData)
+{
+	numNext = (int)str.size();
+	memset(alphaID, -1, sizeof(alphaID));
+	for (int i = 0; i < numNext; ++i) {
+		alphaID[int(str[i])] = i;
+	}
+	defaultData = _defaultData;
+	root = new TrieNode<DataType>(numNext, defaultData);
+}
+
+template<class DataType>
+Trie<DataType>::~Trie() {
+	deallocate(root);
+	std::cerr << "Deleted Trie\n";
+}
 template<class DataType>
 void Trie<DataType>::bfs(TrieNode<DataType>* cur, std::vector<DataType>& result, int searchNumber) {
 	std::queue<TrieNode<DataType>*> q;
@@ -126,44 +157,15 @@ std::vector<DataType> Trie<DataType>::searchByKey(const std::string& str) {
 	return result;
 }
 
-template<class DataType>
-TrieNode<DataType>::TrieNode(const int &numNext, const DataType &data) {
-	this->data = data;
-	this->pNext.resize(numNext);
-	for (int i = 0; i < numNext; i++) {
-		this->pNext[i] = nullptr;
-	}
-}
-
-template<class DataType>
-TrieNode<DataType>::~TrieNode() {
-	std::cerr << "Deleted TrieNode\n";
-}
-
-template <class DataType>
-Trie<DataType>::Trie(const std::string& str, const DataType& _defaultData)
-{
-	numNext = (int)str.size();
-	memset(alphaID, -1, sizeof(alphaID));
-	for (int i = 0; i < numNext; ++i) {
-		alphaID[int(str[i])] = i;
-	}
-	defaultData = _defaultData;
-	root = new TrieNode<DataType>(numNext, defaultData);
-}
-
-template<class DataType>
-Trie<DataType>::~Trie() {
-	deallocate(root);
-	std::cerr << "Deleted Trie\n";
-}
 
 template<class DataType>
 void Trie<DataType>::deallocate(TrieNode<DataType>*& cur) {
 	if (cur == nullptr)
 		return;
-	for (int i = 0; i < numNext; i++)
+	for (int i = 0; i < numNext; i++) {
 		deallocate(cur->pNext[i]);
+	}
+	delete[] cur->pNext;
 	delete cur;
 	cur = nullptr;
 }
@@ -226,4 +228,80 @@ Trie_State Trie<DataType>::remove(const std::string& str) {
 
 	cur->data = defaultData;
 	return success;
+}
+template<class DataType>
+void Trie<DataType>::resetCnt(TrieNode<DataType>* root) {
+	if (root == nullptr)
+		return;
+
+	if (root->data != defaultData) {
+		root->data->cnt = 0;
+	}
+
+	for (int i = 0; i < numNext; i++) {
+		resetCnt(root->pNext[i]);
+	}
+}
+
+template<class DataType>
+void Trie<DataType>::resetCnt() {
+	return resetCnt(root);
+}
+template<class DataType>
+void Trie<DataType>::clear(TrieNode<DataType>* root) {
+	if (root == nullptr) {
+		return;
+	}
+	for (int i = 0; i < numNext; ++i) {
+		if (root->pNext[i] != nullptr) {
+			clear(root->pNext[i]);
+			root->pNext[i] = nullptr;
+		}
+	}
+	if (root->data != defaultData) {
+		delete root->data;
+		root->data = defaultData;
+	}
+}
+template<class DataType>
+void Trie<DataType>::clear() {
+	clear(root);
+	root = new TrieNode<DataType>(numNext, defaultData);
+}
+
+template<class DataType>
+void Trie<DataType>::calc(TrieNode<DataType>* root, double poss) {
+	if (root == nullptr)
+		return;
+
+
+	if (root->data != defaultData) {
+		poss += root->data->cnt;
+		if (poss > 0.005) {
+			for (auto def : root->data->defs) {
+				def->cnt += poss * std::pow(0.988889, (double)root->data->defs.size());
+			}
+		}
+	}
+
+	for (int i = 0; i < numNext; i++)
+		calc(root->pNext[i], poss / 3.0);
+}
+template<class DataType>
+void Trie<DataType>::calc() {
+	calc(root, 0);
+}
+template<class DataType>
+void Trie<DataType>::traverse(TrieNode<DataType>* cur, const std::string &str) {
+	if (cur == nullptr)
+		return;
+	for (int i = 0; i < numNext; i++) if(cur->pNext[i]) {
+		std::cout << str[i] << '\n';
+		traverse(cur->pNext[i], str);
+	}
+}
+
+template<class DataType>
+void Trie<DataType>::traverse(const std::string& str) {
+	traverse(root, str);
 }
