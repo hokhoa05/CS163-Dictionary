@@ -140,7 +140,36 @@ int DropdownMenu::handleEvent(const sf::Event& event, const sf::Vector2i& mouseP
     return 0;
 }
 
+void spriteButton::draw()
+{
+    if (isClicked) {
+        window.draw(clickedSprite);
+    }
+    else {
+        window.draw(defaultSprite);
+    }
+}
 
+bool spriteButton::update(sf::Vector2i& mousePos)
+{
+    sf::FloatRect bounds = defaultSprite.getGlobalBounds();
+
+    if (bounds.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            isClicked = true;
+            return true;
+        }
+    }
+
+    isClicked = false;
+    return false;
+}
+
+void spriteButton::setPosition(const sf::Vector2f& position)
+{
+    defaultSprite.setPosition(position.x, position.y);
+    clickedSprite.setPosition(position.x, position.y);
+}
 
 
 
@@ -154,6 +183,7 @@ void update2(int& cooldown, sf::CircleShape& shape, sf::RenderWindow& window)
         cooldown = 0;
     }
 }
+
 
 void openSubWin()
 {
@@ -193,6 +223,17 @@ int mainMenu()
         return -1;
     }
     ////////////////////////////////////////////////////// initialize
+
+
+    sf::Texture defaultTexture;
+    sf::Texture clickedTexture;
+    defaultTexture.loadFromFile("src/UI/star3.png");
+    //defaultTexture.setScale(sf::Vector2f(0.5f, 0.5f));
+    clickedTexture.loadFromFile("src/UI/star4.png");
+
+    spriteButton favoriteButton(window, defaultTexture, clickedTexture);
+    favoriteButton.setPosition({ 100, 250 });
+
 
     Button button({ 100, 40 }, { 0, 0 }, "file", font);
 
@@ -234,10 +275,10 @@ int mainMenu()
             std::cout << i;
         if (button.update(mousePos))
             openSubWin();
-
+        favoriteButton.update(mousePos);
     /////////////////////////////////////////////////////////// draw
 
-
+        favoriteButton.draw();
         button.draw(window);
         textBox.drawTextBox(window);
         dropdown.draw(window); 

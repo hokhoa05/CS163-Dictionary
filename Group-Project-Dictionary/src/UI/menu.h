@@ -57,8 +57,26 @@ public:
      int handleEvent(const sf::Event& event, const sf::Vector2i& mousePos);
 };
 
+class spriteButton 
+{
+public:
+    sf::Sprite defaultSprite;
+    sf::Sprite clickedSprite;
+    sf::RenderWindow& window;
+    bool isClicked;
 
-void typingBoxUpdate(sf::Event& event, sf::Text& text, std::string& input);
+    spriteButton(sf::RenderWindow& win, const sf::Texture& defaultTex, const sf::Texture& clickedTex)
+        : window(win), isClicked(false) {
+        defaultSprite.setTexture(defaultTex);
+        clickedSprite.setTexture(clickedTex);
+    }
+    void draw();
+    bool update(sf::Vector2i& mousePos);
+    void setPosition(const sf::Vector2f& position);
+
+};
+
+//void typingBoxUpdate(sf::Event& event, sf::Text& text, std::string& input);
 void openSubWin();
 void update2(int& cooldown, sf::CircleShape& shape, sf::RenderWindow& window);
 void suggest(DropdownMenu& dropdown);
