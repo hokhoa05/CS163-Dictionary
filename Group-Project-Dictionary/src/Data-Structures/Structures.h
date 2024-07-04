@@ -1,16 +1,8 @@
 #pragma once
-<<<<<<< HEAD
-#include <fstream>
-#include <sstream>
 #include "Trie.h"
 
-=======
-#include "Trie.h"
->>>>>>> main
 struct Word;
 struct Definition;
-
-void loadWordsToTrie(const std::string& filename, Trie<Word*>*& trie);
 
 
 
@@ -91,5 +83,9 @@ struct Dict {
 	std::vector<Word*> searchWithDefinition(const std::string &def);
 	/*
 		return vector<Word*> have definition def
+	*/
+	void loadWordlistFromfile(const std::string& filename);
+	/*
+		load a wordlist to dictionary by filename
 	*/
 };

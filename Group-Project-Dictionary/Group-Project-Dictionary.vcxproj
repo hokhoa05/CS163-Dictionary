@@ -30,10 +30,8 @@
     <ClInclude Include="src\UI\menu.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="data\emojis\Data.txt" />
-    <Text Include="data\eng-eng\Data.txt" />
-    <Text Include="data\eng-vie\Data.txt" />
-    <Text Include="data\slang\Data.txt" />
+    <Text Include="data\eng-eng\english-dictionary.txt" />
+    <Text Include="data\eng-vie\eng-vie.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

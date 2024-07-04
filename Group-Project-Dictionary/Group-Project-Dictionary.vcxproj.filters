@@ -40,16 +40,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="data\eng-eng\Data.txt">
+    <Text Include="data\eng-eng\english-dictionary.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="data\emojis\Data.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="data\eng-vie\Data.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="data\slang\Data.txt">
+    <Text Include="data\eng-vie\eng-vie.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
