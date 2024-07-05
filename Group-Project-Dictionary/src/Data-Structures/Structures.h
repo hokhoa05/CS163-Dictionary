@@ -3,6 +3,7 @@
 
 struct Word;
 struct Definition;
+struct History;
 
 
 
@@ -88,4 +89,18 @@ struct Dict {
 	/*
 		load a wordlist to dictionary by filename
 	*/
+	History* hiswords;
+	/*
+		saved history words
+	*/
+};
+
+struct History {
+	History();
+	~History();
+
+	std::vector<Word*> wordlist;
+
+	void saveWordlistIntoFile(const std::string& hisfile, std::vector<Word*> search);
+	void loadWordfromfile(const std::string& hisfile);
 };

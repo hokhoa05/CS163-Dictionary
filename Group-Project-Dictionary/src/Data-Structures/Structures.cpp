@@ -34,6 +34,7 @@ Definition::~Definition() {
 Dict::Dict() {
 	trieWord = new Trie<Word*>(PRINTABLE, nullptr);
 	trieDef = new Trie<Word*>(PRINTABLE, nullptr);
+	hiswords = nullptr;
 }
 Dict::~Dict() {
 	trieDef->clear();
@@ -49,6 +50,8 @@ Dict::~Dict() {
 	trieWord = nullptr;
 	delete trieDef;
 	trieDef = nullptr;
+	delete hiswords;
+	hiswords = nullptr;
 }
 int editDistance(const std::string& a, const std::string& b) {
 	int n = (int)a.size();
@@ -196,5 +199,57 @@ void Dict:: loadWordlistFromfile(const std::string& filename) {
 		std::string defData = iss.str().substr(wordData.length() + 1);
 		this->addWordAndDef(wordData, defData);
 	}
+	infile.close();
+}
+
+History::History() {}
+
+History::~History() {
+	for (auto word : wordlist) {
+		delete word;
+	}
+}
+
+void History::saveWordlistIntoFile(const std::string& hisfile, std::vector<Word*> search) {
+	std::ofstream outfile(hisfile);
+	if (!outfile.is_open()) {
+		std::cerr << "Cannot open" << hisfile << '\n';
+		return;
+	}
+
+	for (auto word : search) {
+		outfile << word->data;
+		for (auto def : word->defs) {
+			outfile << '\t' << def->data;
+		}
+	}
+
+	std::cout << "Saving word into file successfully" << '\n';
+	outfile.close();
+}
+
+void History::loadWordfromfile(const std::string& hisfile) {
+	std::ifstream infile(hisfile);
+	if (!infile.is_open()) {
+		std::cerr << "Cannot open" << hisfile << '\n';
+		return;
+	}
+
+	std::string line;
+	while (getline(infile, line)) {
+		std::istringstream iss(line);
+		std::string wordData;
+		iss >> wordData;
+		Word* newWord = new Word(wordData);
+
+		std::string defData;
+		while (iss >> defData) {
+			Definition* newDef = new Definition(defData);
+			newWord->defs.push_back(newDef);
+		}
+		this->wordlist.push_back(newWord);
+	}
+
+	std::cout << "Loading wordlist from file successfully" << '\n';
 	infile.close();
 }
