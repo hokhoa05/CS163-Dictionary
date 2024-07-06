@@ -93,6 +93,14 @@ struct Dict {
 	/*
 		saved history words
 	*/
+	void deleteDefinition(Definition* def);
+	/*
+		delete a definition
+	*/
+	void deleteWord(Word* word);
+	/*
+		delete a word
+	*/
 };
 
 struct History {
