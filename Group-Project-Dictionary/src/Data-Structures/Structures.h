@@ -80,4 +80,12 @@ struct Dict {
 	/*
 		return vector<Word*> have definition def
 	*/
+	void deleteDefinition(Definition* def);
+	/*
+		delete a definition
+	*/
+	void deleteWord(Word* word);
+	/*
+		delete a word
+	*/
 };

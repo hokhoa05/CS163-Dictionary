@@ -158,6 +158,7 @@ Definition* Dict::addDefinition(const std::string& d) {
 	allDefs.push_back(tmp);
 	return tmp;
 }
+
 Word* Dict::addWord(const std::string& w) {
 	std::string s = normalize(w);
 	Word* tmp = nullptr;
@@ -174,4 +175,42 @@ void Dict::addWordAndDef(const std::string& w, const std::string& d) {
 	Definition* def = addDefinition(d);
 	word->defs.push_back(def);
 	def->word = word;
+}	
+void Dict::deleteDefinition(Definition* def) {
+	std::string str = def->data;
+	for (std::string x : split(str, ' ')) {
+		x = normalize(x);
+		if ((int)x.size() < 3)
+			continue;
+		Word* tmp = nullptr;
+		if (trieDef->find(x, tmp) == non_exist) {
+			std::cerr << "Error: definition is not exist\n";
+			return;
+		}
+		if (std::find(tmp->defs.begin(), tmp->defs.end(), str) == tmp->defs.end()) {
+			std::cerr << "Error: cannot find definition having the word\n";
+			return;
+		}
+		tmp->defs.erase(std::find(tmp->defs.begin(), tmp->defs.end(), str));
+	}
+	def->word->defs.erase(std::find(def->word->defs.begin(), def->word->defs.end(), def));
+	allDefs.erase(std::find(allDefs.begin(), allDefs.end(), def));
+	delete def;
+	def = nullptr;
+}
+void Dict::deleteWord(Word *word) {
+	while (!word->defs.empty()) {
+		deleteDefinition(word->defs.back());
+	}
+	if (std::find(allWords.begin(), allWords.end(), word) == allWords.end()) {
+		std::cerr << "Error: Find word in allWords (deleteWord)";
+		return;
+	}
+	allWords.erase(std::find(allWords.begin(), allWords.end(), word));
+	if (trieWord->remove(word->data) != success) {
+		std::cerr << "Error: Delete word trie\n";
+		return;
+	}
+	delete word;
+	word = nullptr;
 }
