@@ -199,6 +199,7 @@ void Dict:: loadWordlistFromfile(const std::string& filename) {
 		std::string defData = iss.str().substr(wordData.length() + 1);
 		this->addWordAndDef(wordData, defData);
 	}
+	std::cout << "Loading wordlist from file successful" << '\n';
 	infile.close();
 }
 
@@ -211,16 +212,15 @@ History::~History() {
 }
 
 void History::saveWordlistIntoFile(const std::string& hisfile, std::vector<Word*> search) {
-	std::ofstream outfile(hisfile);
+	std::ofstream outfile(hisfile, std::ios::ate);
 	if (!outfile.is_open()) {
 		std::cerr << "Cannot open" << hisfile << '\n';
 		return;
 	}
 
 	for (auto word : search) {
-		outfile << word->data;
 		for (auto def : word->defs) {
-			outfile << '\t' << def->data;
+			outfile << word->data << '\t' << def->data << '\n';
 		}
 	}
 
@@ -236,19 +236,22 @@ void History::loadWordfromfile(const std::string& hisfile) {
 	}
 
 	std::string line;
-	while (getline(infile, line)) {
+	Word* currentWord = nullptr;
+
+	while (std::getline(infile, line)) {
 		std::istringstream iss(line);
 		std::string wordData;
 		iss >> wordData;
-		Word* newWord = new Word(wordData);
 
-		std::string defData;
-		while (iss >> defData) {
-			Definition* newDef = new Definition(defData);
-			newWord->defs.push_back(newDef);
+		if (currentWord == nullptr || wordData != currentWord->data) {
+			currentWord = new Word(wordData);
 		}
-		this->wordlist.push_back(newWord);
+
+		std::string defData = iss.str().substr(wordData.length() + 1);
+		Definition* newDef = new Definition(defData);
+		currentWord->defs.push_back(newDef);
 	}
+
 
 	std::cout << "Loading wordlist from file successfully" << '\n';
 	infile.close();
