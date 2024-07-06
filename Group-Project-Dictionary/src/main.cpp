@@ -15,6 +15,8 @@ int main() {
 	std::vector<Word*> v = data->searchWithDefinition("A red fruit to eat");
 	for (auto s : v)
 		std::cout << s->data << '\n';
+	std::string filename = ENG_ENG_FILE;
+	data->loadWordlistFromfile(filename);
 	delete data;
 	mainMenu();
 	return 0;

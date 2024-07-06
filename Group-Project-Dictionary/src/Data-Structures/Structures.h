@@ -1,7 +1,12 @@
 #pragma once
 #include "Trie.h"
+
 struct Word;
 struct Definition;
+struct History;
+
+
+
 struct Word {
 	double cnt;
 	bool isFavorite; //Check if Word is in favorite list
@@ -80,4 +85,30 @@ struct Dict {
 	/*
 		return vector<Word*> have definition def
 	*/
+	void loadWordlistFromfile(const std::string& filename);
+	/*
+		load a wordlist to dictionary by filename
+	*/
+	History* hiswords;
+	/*
+		saved history words
+	*/
+	void deleteDefinition(Definition* def);
+	/*
+		delete a definition
+	*/
+	void deleteWord(Word* word);
+	/*
+		delete a word
+	*/
+};
+
+struct History {
+	History();
+	~History();
+
+	std::vector<Word*> wordlist;
+
+	void saveWordlistIntoFile(const std::string& hisfile, std::vector<Word*> search);
+	void loadWordfromfile(const std::string& hisfile);
 };
