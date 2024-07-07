@@ -48,7 +48,7 @@ std::string normalize(const std::string& a); //
 * normalize("Kho*&AD") -> "khoad"
 */
 struct Dict {
-	Dict();
+	Dict(const std::string &dir);
 	~Dict();
 	Trie<Word*>* trieDef = nullptr;
 	/*

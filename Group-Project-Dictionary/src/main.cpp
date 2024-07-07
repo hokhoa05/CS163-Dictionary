@@ -7,16 +7,11 @@
 #include "UI/menu.h"
 
 int main() {
-	Dict* data = new Dict();
-	data->addWordAndDef("love", "To make an emotion to someone");
-	data->addWordAndDef("eating", "To eat something");
-	data->addWordAndDef("apple", "A red fruit to eat");
-
-	std::vector<Word*> v = data->searchWithDefinition("A red fruit to eat");
-	for (auto s : v)
-		std::cout << s->data << '\n';
-	std::string filename = ENG_ENG_FILE;
-	data->loadWordlistFromfile(filename);
+	Dict* data = new Dict("../data/eng-vie/Data.txt");
+	std::vector<Word*> search = data->searchWithDefinition("mot cach phi chinh tri");
+	for (auto x : search) {
+		std::cout << x->data << "\n";
+	}
 	delete data;
 	mainMenu();
 	return 0;

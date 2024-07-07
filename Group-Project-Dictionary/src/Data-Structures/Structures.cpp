@@ -1,4 +1,5 @@
 #include<string>
+#include<utility>
 #include<vector>
 #include<iostream>
 #include<math.h>
@@ -16,7 +17,7 @@ Word::Word(const std::string& str) {
 }
 
 Word::~Word() {
-	std::cerr << "Deleted Word\n";
+	//std::cerr << "Deleted Word\n";
 }
 
 Definition::Definition(const std::string& str) {
@@ -26,17 +27,14 @@ Definition::Definition(const std::string& str) {
 }
 
 Definition::~Definition() {
-	std::cerr << "Deleted Definition\n";
+	//std::cerr << "Deleted Definition\n";
 }
 
-Dict::Dict() {
-	trieWord = new Trie<Word*>(PRINTABLE, nullptr);
-	trieDef = new Trie<Word*>(PRINTABLE, nullptr);
-}
 
-Dict::Dict() {
+Dict::Dict(const std::string &dir) {
 	trieWord = new Trie<Word*>(PRINTABLE, nullptr);
 	trieDef = new Trie<Word*>(PRINTABLE, nullptr);
+	loadWordlistFromfile(dir);
 	hiswords = nullptr;
 }
 Dict::~Dict() {
@@ -259,7 +257,7 @@ void History::loadWordfromfile(const std::string& hisfile) {
 	std::cout << "Loading wordlist from file successfully" << '\n';
 	infile.close();
 }
-}	
+
 void Dict::deleteDefinition(Definition* def) {
 	std::string str = def->data;
 	for (std::string x : split(str, ' ')) {
@@ -271,11 +269,11 @@ void Dict::deleteDefinition(Definition* def) {
 			std::cerr << "Error: definition is not exist\n";
 			return;
 		}
-		if (std::find(tmp->defs.begin(), tmp->defs.end(), str) == tmp->defs.end()) {
+		if (std::find(tmp->defs.begin(), tmp->defs.end(), def) == tmp->defs.end()) {
 			std::cerr << "Error: cannot find definition having the word\n";
 			return;
 		}
-		tmp->defs.erase(std::find(tmp->defs.begin(), tmp->defs.end(), str));
+		tmp->defs.erase(std::find(tmp->defs.begin(), tmp->defs.end(), def));
 	}
 	def->word->defs.erase(std::find(def->word->defs.begin(), def->word->defs.end(), def));
 	allDefs.erase(std::find(allDefs.begin(), allDefs.end(), def));
