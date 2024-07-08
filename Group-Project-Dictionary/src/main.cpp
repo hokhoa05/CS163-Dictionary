@@ -8,10 +8,8 @@
 
 int main() {
 	Dict* data = new Dict(VIE_ENG_FILE);
-	std::vector<Word*> search = data->searchWithDefinition("chicken");
-	for (auto x : search) {
-		std::cout << x->data << "\n";
-	}
+	Definition* def = data->getRandomWord();
+	std::cout << def->word->data << "\t" << def->data;
 	delete data;
 	//mainMenu();
 	return 0;

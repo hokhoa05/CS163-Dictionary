@@ -4,8 +4,11 @@
 #include<iostream>
 #include<math.h>
 #include<algorithm>
-#include <fstream>
-#include <sstream>
+#include<fstream>
+#include<sstream>
+#include<chrono>
+#include<random>
+
 #include "Static.h"
 #include "Trie.h"
 #include "Structures.h"
@@ -176,8 +179,8 @@ Word* Dict::addWord(const std::string& w) {
 	if (trieWord->find(s, tmp) != success) {
 		tmp = new Word(w);
 		trieWord->insert(s, tmp);
+		allWords.push_back(tmp);
 	}
-	allWords.push_back(tmp);
 	return tmp;
 }
 
@@ -197,6 +200,8 @@ void Dict:: loadWordlistFromfile(const std::string& filename) {
 	std::string line;
 	while (std::getline(infile, line)) {
 		std::vector<std::string> str = split(line, '\t');
+		if ((int)str.size() < 2)
+			continue;
 		addWordAndDef(str[0], str[1]);
 	}
 	infile.close();
@@ -296,4 +301,10 @@ bool Dict::deleteWord(Word *word) {
 	delete word;
 	word = nullptr;
 	return true;
+}
+Definition* Dict::getRandomWord() {
+	std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
+	Word* word = allWords[std::uniform_int_distribution<int>(0, (int)allWords.size()-1)(rng)];
+	Definition* def = word->defs[std::uniform_int_distribution<int>(0, (int)word->defs.size() - 1)(rng)];
+	return def;
 }

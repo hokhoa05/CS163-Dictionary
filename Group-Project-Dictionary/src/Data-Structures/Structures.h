@@ -101,6 +101,10 @@ struct Dict {
 	/*
 		delete a word
 	*/
+	Definition* getRandomWord();
+	/*
+		return a random definition with a word.
+	*/
 };
 
 struct History {
