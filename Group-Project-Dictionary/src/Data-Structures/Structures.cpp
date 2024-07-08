@@ -35,7 +35,7 @@ Dict::Dict(const std::string &dir) {
 	trieWord = new Trie<Word*>(PRINTABLE, nullptr);
 	trieDef = new Trie<Word*>(PRINTABLE, nullptr);
 	loadWordlistFromfile(dir);
-	hiswords = nullptr;
+	hiswords = new History();
 }
 Dict::~Dict() {
 	trieDef->clear();
@@ -174,7 +174,7 @@ Word* Dict::addWord(const std::string& w) {
 	std::string s = normalize(w);
 	Word* tmp = nullptr;
 	if (trieWord->find(s, tmp) != success) {
-		tmp = new Word(s);
+		tmp = new Word(w);
 		trieWord->insert(s, tmp);
 	}
 	allWords.push_back(tmp);
@@ -195,13 +195,9 @@ void Dict:: loadWordlistFromfile(const std::string& filename) {
 	}
 
 	std::string line;
-
 	while (std::getline(infile, line)) {
-		std::istringstream iss(line);
-		std::string wordData;
-		iss >> wordData;
-		std::string defData = iss.str().substr(wordData.length() + 1);
-		this->addWordAndDef(wordData, defData);
+		std::vector<std::string> str = split(line, '\t');
+		addWordAndDef(str[0], str[1]);
 	}
 	infile.close();
 }
@@ -258,7 +254,7 @@ void History::loadWordfromfile(const std::string& hisfile) {
 	infile.close();
 }
 
-void Dict::deleteDefinition(Definition* def) {
+bool Dict::deleteDefinition(Definition* def) {
 	std::string str = def->data;
 	for (std::string x : split(str, ' ')) {
 		x = normalize(x);
@@ -267,11 +263,11 @@ void Dict::deleteDefinition(Definition* def) {
 		Word* tmp = nullptr;
 		if (trieDef->find(x, tmp) == non_exist) {
 			std::cerr << "Error: definition is not exist\n";
-			return;
+			return false;
 		}
 		if (std::find(tmp->defs.begin(), tmp->defs.end(), def) == tmp->defs.end()) {
 			std::cerr << "Error: cannot find definition having the word\n";
-			return;
+			return false;
 		}
 		tmp->defs.erase(std::find(tmp->defs.begin(), tmp->defs.end(), def));
 	}
@@ -279,20 +275,25 @@ void Dict::deleteDefinition(Definition* def) {
 	allDefs.erase(std::find(allDefs.begin(), allDefs.end(), def));
 	delete def;
 	def = nullptr;
+	return true;
 }
-void Dict::deleteWord(Word *word) {
+bool Dict::deleteWord(Word *word) {
 	while (!word->defs.empty()) {
 		deleteDefinition(word->defs.back());
 	}
 	if (std::find(allWords.begin(), allWords.end(), word) == allWords.end()) {
 		std::cerr << "Error: Find word in allWords (deleteWord)";
-		return;
+		return false;
 	}
 	allWords.erase(std::find(allWords.begin(), allWords.end(), word));
 	if (trieWord->remove(word->data) != success) {
 		std::cerr << "Error: Delete word trie\n";
-		return;
+		return false;
+	}
+	if (std::find(hiswords->wordlist.begin(), hiswords->wordlist.end(), word) != hiswords->wordlist.end()) {
+		hiswords->wordlist.erase(std::find(hiswords->wordlist.begin(), hiswords->wordlist.end(), word));
 	}
 	delete word;
 	word = nullptr;
+	return true;
 }

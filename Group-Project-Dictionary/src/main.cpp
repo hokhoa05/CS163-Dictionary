@@ -7,12 +7,12 @@
 #include "UI/menu.h"
 
 int main() {
-	Dict* data = new Dict("../data/eng-vie/Data.txt");
-	std::vector<Word*> search = data->searchWithDefinition("mot cach phi chinh tri");
+	Dict* data = new Dict(VIE_ENG_FILE);
+	std::vector<Word*> search = data->searchWithDefinition("chicken");
 	for (auto x : search) {
 		std::cout << x->data << "\n";
 	}
 	delete data;
-	mainMenu();
+	//mainMenu();
 	return 0;
 }
