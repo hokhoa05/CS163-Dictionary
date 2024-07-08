@@ -78,8 +78,12 @@ public:
 
 //void typingBoxUpdate(sf::Event& event, sf::Text& text, std::string& input);
 void openSubWin();
-void update2(int& cooldown, sf::CircleShape& shape, sf::RenderWindow& window);
-void suggest(DropdownMenu& dropdown);
+//void update2(int& cooldown, sf::CircleShape& shape, sf::RenderWindow& window);
+void suggestDropdown(DropdownMenu& dropdown);
+std::string wrapText(std::string& text,sf::Font& font, unsigned int characterSize, float maxWidth);
+
+bool defBoxUpdate(TextBox& defBox, std::string newDef, sf::Font& font);
+
 
 int mainMenu();
 
