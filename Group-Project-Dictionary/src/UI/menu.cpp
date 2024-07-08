@@ -172,19 +172,6 @@ void spriteButton::setPosition(const sf::Vector2f& position)
 }
 
 
-
-void update2(int& cooldown, sf::CircleShape& shape, sf::RenderWindow& window)
-{
-    if (cooldown < 8)
-        cooldown++;
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && cooldown >= 8)
-    {
-        shape.setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
-        cooldown = 0;
-    }
-}
-
-
 void openSubWin()
 {
     sf::RenderWindow window(sf::VideoMode(300, 300), "Sub-Window", sf::Style::Default);
@@ -202,7 +189,7 @@ void openSubWin()
     }
 }
 
-void suggest(DropdownMenu& dropdown)
+void suggestDropdown(DropdownMenu& dropdown)
 {
     dropdown.addButton("Word 1");
     dropdown.addButton("Word 2");
@@ -211,6 +198,59 @@ void suggest(DropdownMenu& dropdown)
     dropdown.addButton("Word 5");
 }
 
+std::string wrapText(std::string& text,sf::Font& font, unsigned int characterSize, float maxWidth) 
+{
+    std::string wrappedText;
+    std::string word;
+    float lineWidth = 0; // current line width
+    float spaceWidth = font.getGlyph(' ', characterSize, false).advance;
+    
+    for (char character : text) 
+    {
+        if (character == ' ')     // || c == '\n') 
+        {
+            float wordWidth = spaceWidth;
+            for (char i : word) {
+                wordWidth += font.getGlyph(i, characterSize, false).advance;
+            }
+
+            if (lineWidth + wordWidth > maxWidth) // need enter
+            {
+                wrappedText += '\n';
+                lineWidth = 0;
+            }
+            wrappedText += word + character;
+            lineWidth += wordWidth;
+            word.clear();
+        }
+        else {
+            word += character;
+        }
+    }
+
+    if (!word.empty()) // check the last word // for cases of double space...
+    {
+        float wordWidth = spaceWidth;
+        for (char i : word) 
+        {
+            wordWidth += font.getGlyph(i, characterSize, false).advance;
+        }
+
+        if (lineWidth + wordWidth > maxWidth) 
+        {
+            wrappedText += '\n';
+        }
+        wrappedText += word;
+    }
+
+    return wrappedText;
+}
+bool defBoxUpdate(TextBox& defBox, std::string newDef, sf::Font& font)
+{
+    newDef = wrapText(newDef, font, defBox.text.getCharacterSize(), defBox.textBoxShape.getSize().x);
+    defBox.text.setString(newDef);
+    return true;
+}
 int mainMenu()
 {
     sf::RenderWindow window(sf::VideoMode(800, 800), "App1", sf::Style::Default);
@@ -237,10 +277,14 @@ int mainMenu()
 
     Button button({ 100, 40 }, { 0, 0 }, "file", font);
 
-    TextBox textBox({ 420, 50 }, { 200, 275 }, font);
+    TextBox searchBox({ 420, 50 }, { 200, 275 }, font);
+    TextBox definitionBox({ 420,330 }, { 200,350 }, font);
+
+    std :: string test = "This is a definition of the a word. It can be fitted in the definition box. it will automaticaly enter.";
+    defBoxUpdate(definitionBox, test, font);
 
     DropdownMenu dropdown({ 300, 50 }, { 270, 327 }, font, "Main Button");
-    suggest(dropdown);
+    suggestDropdown(dropdown);
 
     bool keyWasPressed = false;
 
@@ -257,8 +301,8 @@ int mainMenu()
             if (event.type == sf::Event::Closed)
                 window.close();
             if (event.type == sf::Event::MouseButtonPressed) 
-                textBox.handleMouseClick(mousePos);
-            if (textBox.updateTextBox(event) && textBox.inputString.length() >= 4)
+                searchBox.handleMouseClick(mousePos);
+            if (searchBox.updateTextBox(event) && searchBox.inputString.length() >= 4)
                 keyWasPressed = true;
         }
         window.clear(sf::Color::White);
@@ -280,7 +324,8 @@ int mainMenu()
 
         favoriteButton.draw();
         button.draw(window);
-        textBox.drawTextBox(window);
+        searchBox.drawTextBox(window);
+        definitionBox.drawTextBox(window);
         dropdown.draw(window); 
 
      //////////////////////////////////////////////////////////// display
