@@ -47,6 +47,11 @@ std::string normalize(const std::string& a); //
 * example:
 * normalize("Kho*&AD") -> "khoad"
 */
+bool isPrintable(char x);
+/*
+	return True if x is in PRINTABLE
+	else return False
+*/
 struct Dict {
 	Dict(const std::string &dir);
 	~Dict();

@@ -98,14 +98,22 @@ std::vector<std::string> split(const std::string& a, const char& key) {
 		result.push_back(tmp);
 	return result;
 }
+bool isPrintable(char x) {
+	bool ok = 0;
+	for (char c : PRINTABLE) {
+		ok |= (c == x);
+	}
+	return ok;
+}
 std::string normalize(const std::string& a) {
 	std::string result = "";
 	for (char x : a) {
+		if (x == ' ') continue;
 		if (('a' <= x) && (x <= 'z'))
 			result += x;
-		if (('A' <= x) && (x <= 'Z'))
+		else if (('A' <= x) && (x <= 'Z'))
 			result += char(x - 'A' + 'a');
-		if (('0' <= x) && (x <= '9'))
+		else if (isPrintable(x))
 			result += x;
 	}
 	return result;

@@ -7,7 +7,7 @@
 #include "UI/menu.h"
 
 int main() {
-	Dict* data = new Dict(VIE_ENG_FILE);
+	Dict* data = new Dict(ENG_VIE_FILE);
 	Definition* def = data->getRandomWord();
 	std::cout << def->word->data << "\t" << def->data;
 	delete data;
