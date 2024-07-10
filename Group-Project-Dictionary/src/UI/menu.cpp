@@ -104,6 +104,8 @@ void TextBox::handleMouseClick(const sf::Vector2i& mousePos) {
     }
 }
 
+
+
 void DropdownMenu::addButton(const std::string& buttonText)
 {
     sf::Vector2f buttonPosition = position + sf::Vector2f(0, buttons.size() * buttonSize.y);
@@ -111,10 +113,10 @@ void DropdownMenu::addButton(const std::string& buttonText)
 }
 void DropdownMenu::draw(sf::RenderWindow& window) const
 {
-    if (isOpen) {
-        for (const auto& button : buttons) {
+    if (isOpen && buttons.size() != 0) 
+    {
+        for (const auto& button : buttons) 
             button.draw(window);
-        }
     }
 }
 
@@ -123,7 +125,7 @@ int DropdownMenu::handleEvent(const sf::Event& event, const sf::Vector2i& mouseP
         if (mainButton.buttonShape.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos))) 
         {
             isOpen = !isOpen;
-            return 1;
+            return -2;
         }
     }
 
@@ -133,11 +135,11 @@ int DropdownMenu::handleEvent(const sf::Event& event, const sf::Vector2i& mouseP
             if (buttons[i].update(mousePos))
             {
                 isOpen = false;
-                return i+1;
+                return i;
             }
         }
     }
-    return 0;
+    return -1;
 }
 
 void spriteButton::draw()
@@ -251,7 +253,60 @@ bool defBoxUpdate(TextBox& defBox, std::string newDef, sf::Font& font)
     defBox.text.setString(newDef);
     return true;
 }
-int mainMenu()
+std::string defSearchwindow(Dict*& data,sf::Font& font)
+{
+    sf::RenderWindow window(sf::VideoMode(300, 570), "Definition Search", sf::Style::Default);
+    window.setFramerateLimit(60);
+
+    TextBox searchBox({ 300, 50 }, { 0, 0 }, font);
+    searchBox.focused = true;
+    //bool autoSearch = false;
+    std::vector<Word*> result;
+    DropdownMenu choises({ 300, 50 }, { 0, 50 }, font, "Main Button");
+    choises.isOpen = true;
+    bool newResult = false;
+    int k = -1;
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+            if (event.type == sf::Event::KeyPressed)
+            {
+                if (event.key.code == sf::Keyboard::Enter)
+                {
+                    result.clear();                   
+                    result = data->searchWithDefinition(searchBox.inputString);
+                    newResult = true;
+                }
+            }
+            searchBox.updateTextBox(event);
+        }
+        window.clear(sf::Color::Blue);
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        if (newResult)
+        {
+            choises.buttons.clear();
+            for (int i = 0; (i < 10 && i < result.size()); i++)
+            {
+                choises.addButton(result[i]->data);
+            }
+            newResult = false;
+        }
+        k = choises.handleEvent(event,mousePos);
+        if (k >= 0)
+            return choises.buttons[k].buttonText.getString();
+
+        searchBox.drawTextBox(window);
+        choises.draw(window);
+        window.display(); 
+
+    }
+
+}
+int mainMenu(Dict* &data)
 {
     sf::RenderWindow window(sf::VideoMode(800, 800), "App1", sf::Style::Default);
 
@@ -276,7 +331,7 @@ int mainMenu()
 
 
     Button button({ 100, 40 }, { 0, 0 }, "file", font);
-
+    Button defSearchButton({ 50, 50 }, { 630, 275 }, "Mode", font);
     TextBox searchBox({ 420, 50 }, { 200, 275 }, font);
     TextBox definitionBox({ 420,330 }, { 200,350 }, font);
 
@@ -287,6 +342,7 @@ int mainMenu()
     suggestDropdown(dropdown);
 
     bool keyWasPressed = false;
+    //bool defSearchMode = false;
 
     /////////////////////////////////////////////////// main loop
 
@@ -300,9 +356,9 @@ int mainMenu()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
-            if (event.type == sf::Event::MouseButtonPressed) 
+            if (event.type == sf::Event::MouseButtonPressed) //focus on search box
                 searchBox.handleMouseClick(mousePos);
-            if (searchBox.updateTextBox(event) && searchBox.inputString.length() >= 4)
+            if ((searchBox.updateTextBox(event) && searchBox.inputString.length() >= 4))
                 keyWasPressed = true;
         }
         window.clear(sf::Color::White);
@@ -315,8 +371,10 @@ int mainMenu()
         }       
 
         int i = dropdown.handleEvent(event, mousePos);
-        if (i)
+        if (i >= 0)
             std::cout << i;
+        if (defSearchButton.update(mousePos))
+            std::cout << defSearchwindow(data, font);
         if (button.update(mousePos))
             openSubWin();
         favoriteButton.update(mousePos);
@@ -324,6 +382,7 @@ int mainMenu()
 
         favoriteButton.draw();
         button.draw(window);
+        defSearchButton.draw(window);
         searchBox.drawTextBox(window);
         definitionBox.drawTextBox(window);
         dropdown.draw(window); 
