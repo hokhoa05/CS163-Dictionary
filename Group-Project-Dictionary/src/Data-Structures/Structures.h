@@ -47,8 +47,13 @@ std::string normalize(const std::string& a); //
 * example:
 * normalize("Kho*&AD") -> "khoad"
 */
+bool isPrintable(char x);
+/*
+	return True if x is in PRINTABLE
+	else return False
+*/
 struct Dict {
-	Dict();
+	Dict(const std::string &dir);
 	~Dict();
 	Trie<Word*>* trieDef = nullptr;
 	/*
@@ -93,13 +98,17 @@ struct Dict {
 	/*
 		saved history words
 	*/
-	void deleteDefinition(Definition* def);
+	bool deleteDefinition(Definition* def);
 	/*
 		delete a definition
 	*/
-	void deleteWord(Word* word);
+	bool deleteWord(Word* word);
 	/*
 		delete a word
+	*/
+	Definition* getRandomWord();
+	/*
+		return a random definition with a word.
 	*/
 };
 

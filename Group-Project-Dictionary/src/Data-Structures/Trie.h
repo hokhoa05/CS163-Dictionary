@@ -120,7 +120,7 @@ Trie<DataType>::Trie(const std::string& str, const DataType& _defaultData)
 template<class DataType>
 Trie<DataType>::~Trie() {
 	deallocate(root);
-	std::cerr << "Deleted Trie\n";
+	//std::cerr << "Deleted Trie\n";
 }
 template<class DataType>
 void Trie<DataType>::bfs(TrieNode<DataType>* cur, std::vector<DataType>& result, int searchNumber) {

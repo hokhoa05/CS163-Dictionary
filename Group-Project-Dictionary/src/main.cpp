@@ -7,17 +7,10 @@
 #include "UI/menu.h"
 
 int main() {
-	Dict* data = new Dict();
-	data->addWordAndDef("love", "To make an emotion to someone");
-	data->addWordAndDef("eating", "To eat something");
-	data->addWordAndDef("apple", "A red fruit to eat");
-
-	std::vector<Word*> v = data->searchWithDefinition("A red fruit to eat");
-	for (auto s : v)
-		std::cout << s->data << '\n';
-	std::string filename = ENG_ENG_FILE;
-	data->loadWordlistFromfile(filename);
+	Dict* data = new Dict(ENG_ENG_FILE);
+	Definition* def = data->getRandomWord();
+	std::cout << def->word->data << "\t" << def->data;
 	delete data;
-	mainMenu();
+	//mainMenu();
 	return 0;
 }
