@@ -84,7 +84,8 @@ void suggestDropdown(DropdownMenu& dropdown);
 std::string wrapText(std::string& text,sf::Font& font, unsigned int characterSize, float maxWidth);
 
 bool defBoxUpdate(TextBox& defBox, std::string newDef, sf::Font& font);
-std::string defSearchwindow(Dict*& data, sf::Font& font);
+
+//std::string defSearchwindow(Dict*& data, sf::Font& font);
 int mainMenu(Dict*& data);
 
 

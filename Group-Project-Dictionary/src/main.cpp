@@ -7,10 +7,10 @@
 #include "UI/menu.h"
 
 int main() {
-	Dict* data = new Dict(ENG_ENG_FILE);
-	Definition* def = data->getRandomWord();
-	std::cout << def->word->data << "\t" << def->data;
+	Dict* data = new Dict(EMOJI_FILE);
+	//Definition* def = data->getRandomWord();
+	//std::cout << def->word->data << "\t" << def->data;
+	mainMenu(data);
 	delete data;
-	//mainMenu();
 	return 0;
 }
