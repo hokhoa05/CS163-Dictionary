@@ -316,40 +316,31 @@ Definition* Dict::getRandomWord() {
 	Definition* def = word->defs[std::uniform_int_distribution<int>(0, (int)word->defs.size() - 1)(rng)];
 	return def;
 }
+Word* searchByKey(Dict* dict, const std::string& prefix) {
+	if (dict == nullptr) return nullptr;
 
-std::string searchByKey(Dict* data, const std::string& key, bool& startSearch, sf::Event& event, const sf::Vector2i& mousePos, sf::Font& font, sf::RenderWindow& window) {
-	static DropdownMenu dropdown({ 300, 50 }, { 270, 327 }, font, "Suggestions"); // Static for persistence
-	std::string result;
+	Trie<Word*>* trieWord = dict->trieWord;
 
-	if (key.length() >= 4 && startSearch) {
-		std::vector<Word*> suggestions = data->trieWord->searchByKey(normalize(key));
-
-		dropdown.buttons.clear();
-		for (int i = 0; i < suggestions.size() && i < 6; i++) {
-			dropdown.addButton(suggestions[i]->data);
+	// Special case: user presses Enter before typing 4 characters
+	if (prefix.back() == '\n' && prefix.size() <= 4) {
+		Word* foundWord;
+		if (trieWord->find(prefix.substr(0, prefix.size() - 1), foundWord) == Trie_State::success) {
+			return foundWord;  // Return the word if it exists
 		}
-		dropdown.isOpen = true;
-		startSearch = false;
+		else {
+			return nullptr;    // Return null if the word doesn't exist
+		}
 	}
 
-	int selectedIndex = dropdown.handleEvent(event, mousePos);
-	if (selectedIndex >= 0) {
-		result = dropdown.buttons[selectedIndex].buttonText.getString();
-		dropdown.isOpen = false; // Close dropdown after selection
-		return result;
+	// Get search results from Trie if the prefix is at least 4 characters long
+	if (prefix.size() >= 4) {
+		std::vector<Word*> results = trieWord->searchByKey(prefix);
+		if (!results.empty()) {
+			return results[0]; // Return the first matching word
+		}
 	}
 
-	Word* exactMatch = nullptr;
-	if (data->trieWord->find(normalize(key), exactMatch) == Trie_State::success) {
-		result = exactMatch->data;
-		dropdown.isOpen = false; // Close dropdown for exact match
-		return result;
-	}
-
-	if (!result.empty() || dropdown.isOpen) {
-		dropdown.draw(window); // Only draw dropdown if it has suggestions or is open
-	}
-
-	return result;  // Return empty if no match or still searching
+	return nullptr; // No match found
 }
+
 
