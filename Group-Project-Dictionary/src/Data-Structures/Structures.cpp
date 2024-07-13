@@ -142,7 +142,7 @@ std::vector<Word*> Dict::searchWithDefinition(const std::string& def) {
 			listDef.push_back(d);
 			d->cnt = ((double)(d->data.size()) - (double)editDistance(def, d->data))/(double)(d->data.size());
 		}
-		if ((int)listDef.size() == 10000)
+		if ((int)listDef.size() == 100)
 			break;
 	}
 	std::sort(listDef.begin(), listDef.end(), [](auto a, auto b) {
