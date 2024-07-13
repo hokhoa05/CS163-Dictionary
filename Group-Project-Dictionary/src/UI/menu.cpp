@@ -367,7 +367,7 @@ int mainMenu(Dict* &data)
             std::vector<Word*> result;
             result = data->searchWithDefinition(searchBox.inputString);
             dropdown.buttons.clear(); 
-            for (int i = 0; (i < 6 && i < result.size()); i++) // add 6 results to the dropdown
+            for (int i = 0; (i < result.size() && i < 6); i++) // add 6 results to the dropdown
                 dropdown.addButton(result[i]->data); 
             dropdown.isOpen = true;
             startSearch = false;
