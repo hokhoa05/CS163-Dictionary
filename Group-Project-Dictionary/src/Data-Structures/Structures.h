@@ -122,6 +122,3 @@ struct History {
 	void loadWordfromfile(const std::string& hisfile);
 };
 
-struct SearchResultsEvent {
-	std::vector<Word*> results;
-};
