@@ -110,6 +110,10 @@ struct Dict {
 	/*
 		return a random definition with a word.
 	*/
+	std::vector<Word*> searchByKey(const std::string& prefix) const;
+	/*
+		return 
+	*/
 };
 
 struct History {
