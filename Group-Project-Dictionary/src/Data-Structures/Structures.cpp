@@ -316,8 +316,9 @@ Definition* Dict::getRandomWord() {
 	Definition* def = word->defs[std::uniform_int_distribution<int>(0, (int)word->defs.size() - 1)(rng)];
 	return def;
 }
-Word* searchByKey(Dict* dict, const std::string& prefix) {
-	if (dict == nullptr) return nullptr;
+std::vector<Word*> searchByKey(Dict* dict, const std::string& prefix) {
+	std::vector<Word*> results;  // Vector to store the matching words
+	if (dict == nullptr) return results;
 
 	Trie<Word*>* trieWord = dict->trieWord;
 
@@ -325,22 +326,20 @@ Word* searchByKey(Dict* dict, const std::string& prefix) {
 	if (prefix.back() == '\n' && prefix.size() <= 4) {
 		Word* foundWord;
 		if (trieWord->find(prefix.substr(0, prefix.size() - 1), foundWord) == Trie_State::success) {
-			return foundWord;  // Return the word if it exists
+			results.push_back(foundWord); // Add the word to the results vector
+			return results;
 		}
 		else {
-			return nullptr;    // Return null if the word doesn't exist
+			return results; // Return an empty vector if the word doesn't exist
 		}
 	}
 
 	// Get search results from Trie if the prefix is at least 4 characters long
 	if (prefix.size() >= 4) {
-		std::vector<Word*> results = trieWord->searchByKey(prefix);
-		if (!results.empty()) {
-			return results[0]; // Return the first matching word
-		}
+		results = trieWord->searchByKey(prefix); // Get all matching words from Trie
 	}
 
-	return nullptr; // No match found
+	return results; // Return the vector of matching words (could be empty)
 }
 
 
