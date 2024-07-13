@@ -121,3 +121,7 @@ struct History {
 	void saveWordlistIntoFile(const std::string& hisfile, std::vector<Word*> search);
 	void loadWordfromfile(const std::string& hisfile);
 };
+
+struct SearchResultsEvent {
+	std::vector<Word*> results;
+};
