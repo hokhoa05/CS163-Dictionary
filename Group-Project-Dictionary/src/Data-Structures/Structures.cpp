@@ -316,3 +316,40 @@ Definition* Dict::getRandomWord() {
 	Definition* def = word->defs[std::uniform_int_distribution<int>(0, (int)word->defs.size() - 1)(rng)];
 	return def;
 }
+
+std::string searchByKey(Dict* data, const std::string& key, bool& startSearch, sf::Event& event, const sf::Vector2i& mousePos, sf::Font& font, sf::RenderWindow& window) {
+	static DropdownMenu dropdown({ 300, 50 }, { 270, 327 }, font, "Suggestions"); // Static for persistence
+	std::string result;
+
+	if (key.length() >= 4 && startSearch) {
+		std::vector<Word*> suggestions = data->trieWord->searchByKey(normalize(key));
+
+		dropdown.buttons.clear();
+		for (int i = 0; i < suggestions.size() && i < 6; i++) {
+			dropdown.addButton(suggestions[i]->data);
+		}
+		dropdown.isOpen = true;
+		startSearch = false;
+	}
+
+	int selectedIndex = dropdown.handleEvent(event, mousePos);
+	if (selectedIndex >= 0) {
+		result = dropdown.buttons[selectedIndex].buttonText.getString();
+		dropdown.isOpen = false; // Close dropdown after selection
+		return result;
+	}
+
+	Word* exactMatch = nullptr;
+	if (data->trieWord->find(normalize(key), exactMatch) == Trie_State::success) {
+		result = exactMatch->data;
+		dropdown.isOpen = false; // Close dropdown for exact match
+		return result;
+	}
+
+	if (!result.empty() || dropdown.isOpen) {
+		dropdown.draw(window); // Only draw dropdown if it has suggestions or is open
+	}
+
+	return result;  // Return empty if no match or still searching
+}
+
