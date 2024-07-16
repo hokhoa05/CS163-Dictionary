@@ -3,11 +3,12 @@
 #include <SFML/Graphics.hpp>
 #include<iostream>
 #include<string>
+#include "../../src/Data-Structures/Structures.h"
 //#include<cstdlib>
 class Button {
 public:
     Button(const sf::Vector2f& size, const sf::Vector2f& position, const std::string& text, const sf::Font& font);
-
+    //~Button();
     void draw(sf::RenderWindow& window) const;
 
     bool update(const sf::Vector2i& mousePos);
@@ -49,7 +50,7 @@ public:
 
      DropdownMenu(const sf::Vector2f& buttonSize, const sf::Vector2f& position, const sf::Font& font, const std::string& mainButtonText)
      : buttonSize(buttonSize), position(position), font(font), isOpen(false), mainButton(buttonSize, position, mainButtonText, font) {}
-
+     
      void addButton(const std::string& buttonText);
 
      void draw(sf::RenderWindow& window) const;
@@ -57,12 +58,34 @@ public:
      int handleEvent(const sf::Event& event, const sf::Vector2i& mousePos);
 };
 
+class spriteButton 
+{
+public:
+    sf::Sprite defaultSprite;
+    sf::Sprite clickedSprite;
+    sf::RenderWindow& window;
+    bool isClicked;
 
-void typingBoxUpdate(sf::Event& event, sf::Text& text, std::string& input);
+    spriteButton(sf::RenderWindow& win, const sf::Texture& defaultTex, const sf::Texture& clickedTex)
+        : window(win), isClicked(false) {
+        defaultSprite.setTexture(defaultTex);
+        clickedSprite.setTexture(clickedTex);
+    }
+    void draw();
+    bool update(sf::Vector2i& mousePos);
+    void setPosition(const sf::Vector2f& position);
+
+};
+
+//void typingBoxUpdate(sf::Event& event, sf::Text& text, std::string& input);
 void openSubWin();
-void update2(int& cooldown, sf::CircleShape& shape, sf::RenderWindow& window);
-void suggest(DropdownMenu& dropdown);
+//void update2(int& cooldown, sf::CircleShape& shape, sf::RenderWindow& window);
+void suggestDropdown(DropdownMenu& dropdown);
+std::string wrapText(std::string& text,sf::Font& font, unsigned int characterSize, float maxWidth);
 
-int mainMenu();
+bool defBoxUpdate(TextBox& defBox, std::string newDef, sf::Font& font);
+
+//std::string defSearchwindow(Dict*& data, sf::Font& font);
+int mainMenu(Dict*& data);
 
 

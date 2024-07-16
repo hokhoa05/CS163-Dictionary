@@ -104,6 +104,8 @@ void TextBox::handleMouseClick(const sf::Vector2i& mousePos) {
     }
 }
 
+
+
 void DropdownMenu::addButton(const std::string& buttonText)
 {
     sf::Vector2f buttonPosition = position + sf::Vector2f(0, buttons.size() * buttonSize.y);
@@ -111,10 +113,10 @@ void DropdownMenu::addButton(const std::string& buttonText)
 }
 void DropdownMenu::draw(sf::RenderWindow& window) const
 {
-    if (isOpen) {
-        for (const auto& button : buttons) {
+    if (isOpen && buttons.size() != 0) 
+    {
+        for (const auto& button : buttons) 
             button.draw(window);
-        }
     }
 }
 
@@ -123,7 +125,7 @@ int DropdownMenu::handleEvent(const sf::Event& event, const sf::Vector2i& mouseP
         if (mainButton.buttonShape.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos))) 
         {
             isOpen = !isOpen;
-            return 1;
+            return -2;
         }
     }
 
@@ -133,27 +135,44 @@ int DropdownMenu::handleEvent(const sf::Event& event, const sf::Vector2i& mouseP
             if (buttons[i].update(mousePos))
             {
                 isOpen = false;
-                return i+1;
+                return i;
             }
         }
     }
-    return 0;
+    return -1;
 }
 
-
-
-
-
-void update2(int& cooldown, sf::CircleShape& shape, sf::RenderWindow& window)
+void spriteButton::draw()
 {
-    if (cooldown < 8)
-        cooldown++;
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && cooldown >= 8)
-    {
-        shape.setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
-        cooldown = 0;
+    if (isClicked) {
+        window.draw(clickedSprite);
+    }
+    else {
+        window.draw(defaultSprite);
     }
 }
+
+bool spriteButton::update(sf::Vector2i& mousePos)
+{
+    sf::FloatRect bounds = defaultSprite.getGlobalBounds();
+
+    if (bounds.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            isClicked = true;
+            return true;
+        }
+    }
+
+    isClicked = false;
+    return false;
+}
+
+void spriteButton::setPosition(const sf::Vector2f& position)
+{
+    defaultSprite.setPosition(position.x, position.y);
+    clickedSprite.setPosition(position.x, position.y);
+}
+
 
 void openSubWin()
 {
@@ -172,7 +191,7 @@ void openSubWin()
     }
 }
 
-void suggest(DropdownMenu& dropdown)
+void suggestDropdown(DropdownMenu& dropdown)
 {
     dropdown.addButton("Word 1");
     dropdown.addButton("Word 2");
@@ -181,9 +200,113 @@ void suggest(DropdownMenu& dropdown)
     dropdown.addButton("Word 5");
 }
 
-int mainMenu()
+std::string wrapText(std::string& text,sf::Font& font, unsigned int characterSize, float maxWidth) 
 {
-    sf::RenderWindow window(sf::VideoMode(800, 800), "App1", sf::Style::Default);
+    std::string wrappedText;
+    std::string word;
+    float lineWidth = 0; // current line width
+    float spaceWidth = font.getGlyph(' ', characterSize, false).advance;
+    
+    for (char character : text) 
+    {
+        if (character == ' ')     // || c == '\n') 
+        {
+            float wordWidth = spaceWidth;
+            for (char i : word) {
+                wordWidth += font.getGlyph(i, characterSize, false).advance;
+            }
+
+            if (lineWidth + wordWidth > maxWidth) // need enter
+            {
+                wrappedText += '\n';
+                lineWidth = 0;
+            }
+            wrappedText += word + character;
+            lineWidth += wordWidth;
+            word.clear();
+        }
+        else {
+            word += character;
+        }
+    }
+
+    if (!word.empty()) // check the last word // for cases of double space...
+    {
+        float wordWidth = spaceWidth;
+        for (char i : word) 
+        {
+            wordWidth += font.getGlyph(i, characterSize, false).advance;
+        }
+
+        if (lineWidth + wordWidth > maxWidth) 
+        {
+            wrappedText += '\n';
+        }
+        wrappedText += word;
+    }
+
+    return wrappedText;
+}
+bool defBoxUpdate(TextBox& defBox, std::string newDef, sf::Font& font)
+{
+    newDef = wrapText(newDef, font, defBox.text.getCharacterSize(), defBox.textBoxShape.getSize().x);
+    defBox.text.setString(newDef);
+    return true;
+}
+/*std::string defSearchwindow(Dict * &data, sf::Font & font)
+{
+    sf::RenderWindow window(sf::VideoMode(300, 570), "Definition Search", sf::Style::Default);
+    window.setFramerateLimit(60);
+
+    TextBox searchBox({ 300, 50 }, { 0, 0 }, font);
+    searchBox.focused = true;
+    std::vector<Word*> result;
+    DropdownMenu choises({ 300, 50 }, { 0, 50 }, font, "Main Button");
+    choises.isOpen = true;
+    bool newResult = false;
+    int k = -1;
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+            if (event.type == sf::Event::KeyPressed)
+            {
+                if (event.key.code == sf::Keyboard::Enter)
+                {
+                    result.clear();                   
+                    result = data->searchWithDefinition(searchBox.inputString);
+                    newResult = true;
+                }
+            }
+            searchBox.updateTextBox(event);
+        }
+        window.clear(sf::Color::Blue);
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        if (newResult)
+        {
+            choises.buttons.clear();
+            for (int i = 0; (i < 10 && i < result.size()); i++)
+            {
+                choises.addButton(result[i]->data);
+            }
+            newResult = false;
+        }
+        k = choises.handleEvent(event,mousePos);
+        if (k >= 0)
+            return choises.buttons[k].buttonText.getString();
+
+        searchBox.drawTextBox(window);
+        choises.draw(window);
+        window.display(); 
+    }
+}*/
+
+int mainMenu(Dict* &data) 
+{
+    sf::RenderWindow window(sf::VideoMode(800, 800), "App1", sf::Style::Default); 
 
     window.setFramerateLimit(10);
 
@@ -194,14 +317,31 @@ int mainMenu()
     }
     ////////////////////////////////////////////////////// initialize
 
-    Button button({ 100, 40 }, { 0, 0 }, "file", font);
 
-    TextBox textBox({ 420, 50 }, { 200, 275 }, font);
+    sf::Texture defaultTexture;
+    sf::Texture clickedTexture;
+    defaultTexture.loadFromFile("src/UI/star3.png");
+    //defaultTexture.setScale(sf::Vector2f(0.5f, 0.5f));
+    clickedTexture.loadFromFile("src/UI/star4.png");
+
+    spriteButton favoriteButton(window, defaultTexture, clickedTexture);
+    favoriteButton.setPosition({ 100, 250 });
+    favoriteButton.defaultSprite.setScale({ 0.5f, 0.5f });
+
+
+    Button button({ 100, 40 }, { 0, 0 }, "file", font);
+    Button defSearchButton({ 50, 50 }, { 630, 275 }, "Mode", font);
+    TextBox searchBox({ 420, 50 }, { 200, 275 }, font);
+    TextBox definitionBox({ 420,330 }, { 200,350 }, font);
+
+    std :: string test = "This is a definition of the a word. It can be fitted in the definition box. it will automaticaly enter.";
+    defBoxUpdate(definitionBox, test, font);
 
     DropdownMenu dropdown({ 300, 50 }, { 270, 327 }, font, "Main Button");
-    suggest(dropdown);
+    suggestDropdown(dropdown);
 
-    bool keyWasPressed = false;
+    bool startSearch = false;
+    bool defSearchMode = false;
 
     /////////////////////////////////////////////////// main loop
 
@@ -215,34 +355,42 @@ int mainMenu()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
-            if (event.type == sf::Event::MouseButtonPressed) 
-                textBox.handleMouseClick(mousePos);
-            if (textBox.updateTextBox(event) && textBox.inputString.length() >= 4)
-                keyWasPressed = true;
+            if (event.type == sf::Event::MouseButtonPressed) //focus on search box
+                searchBox.handleMouseClick(mousePos);
+            if ((searchBox.updateTextBox(event) && searchBox.inputString.length() >= 5)||(event.key.code == sf::Keyboard::Enter))//start search on 4 char or an enter
+                startSearch = true;
         }
         window.clear(sf::Color::White);
-
-    ///////////////////////////////////////////////////////////////// update
-        if (keyWasPressed)
+    /////////////////////////////////////////////////////////////////
+        if (startSearch&&defSearchMode) 
         {
+            std::vector<Word*> result;
+            result = data->searchWithDefinition(searchBox.inputString);
+            dropdown.buttons.clear(); 
+            for (int i = 0; (i < result.size() && i < 6); i++) // add 6 results to the dropdown
+                dropdown.addButton(result[i]->data); 
             dropdown.isOpen = true;
-            keyWasPressed = false;
+            startSearch = false;
         }       
-
         int i = dropdown.handleEvent(event, mousePos);
-        if (i)
-            std::cout << i;
+        if (i >= 0 && defSearchMode)
+                defBoxUpdate(definitionBox, dropdown.buttons[i].buttonText.getString(), font);
+            
+        if (defSearchButton.update(mousePos))
+            defSearchMode = !defSearchMode;
         if (button.update(mousePos))
             openSubWin();
+        favoriteButton.update(mousePos);
+    //////////////////////////////////////////////////////////
 
-    /////////////////////////////////////////////////////////// draw
-
-
+        favoriteButton.draw();
         button.draw(window);
-        textBox.drawTextBox(window);
+        defSearchButton.draw(window);
+        searchBox.drawTextBox(window);
+        definitionBox.drawTextBox(window);
         dropdown.draw(window); 
 
-     //////////////////////////////////////////////////////////// display
+     ////////////////////////////////////////////////////////////
 
         window.display();
     }

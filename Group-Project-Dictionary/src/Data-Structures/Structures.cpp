@@ -1,10 +1,14 @@
 #include<string>
+#include<utility>
 #include<vector>
 #include<iostream>
 #include<math.h>
 #include<algorithm>
-#include <fstream>
-#include <sstream>
+#include<fstream>
+#include<sstream>
+#include<chrono>
+#include<random>
+
 #include "Static.h"
 #include "Trie.h"
 #include "Structures.h"
@@ -16,7 +20,7 @@ Word::Word(const std::string& str) {
 }
 
 Word::~Word() {
-	std::cerr << "Deleted Word\n";
+	//std::cerr << "Deleted Word\n";
 }
 
 Definition::Definition(const std::string& str) {
@@ -26,15 +30,15 @@ Definition::Definition(const std::string& str) {
 }
 
 Definition::~Definition() {
-	std::cerr << "Deleted Definition\n";
+	//std::cerr << "Deleted Definition\n";
 }
 
 
-
-Dict::Dict() {
+Dict::Dict(const std::string &dir) {
 	trieWord = new Trie<Word*>(PRINTABLE, nullptr);
 	trieDef = new Trie<Word*>(PRINTABLE, nullptr);
-	hiswords = nullptr;
+	loadWordlistFromfile(dir);
+	hiswords = new History();
 }
 Dict::~Dict() {
 	trieDef->clear();
@@ -53,6 +57,7 @@ Dict::~Dict() {
 	delete hiswords;
 	hiswords = nullptr;
 }
+
 int editDistance(const std::string& a, const std::string& b) {
 	int n = (int)a.size();
 	int m = (int)b.size();
@@ -73,6 +78,7 @@ int editDistance(const std::string& a, const std::string& b) {
 	}
 	return dp[n][m];
 }
+
 std::vector<std::string> split(const std::string& a, const char& key) {
 	std::vector<std::string> result;
 	std::string tmp = "";
@@ -92,14 +98,22 @@ std::vector<std::string> split(const std::string& a, const char& key) {
 		result.push_back(tmp);
 	return result;
 }
+bool isPrintable(char x) {
+	bool ok = 0;
+	for (char c : PRINTABLE) {
+		ok |= (c == x);
+	}
+	return ok;
+}
 std::string normalize(const std::string& a) {
 	std::string result = "";
 	for (char x : a) {
+		if (x == ' ') continue;
 		if (('a' <= x) && (x <= 'z'))
 			result += x;
-		if (('A' <= x) && (x <= 'Z'))
+		else if (('A' <= x) && (x <= 'Z'))
 			result += char(x - 'A' + 'a');
-		if (('0' <= x) && (x <= '9'))
+		else if (isPrintable(x))
 			result += x;
 	}
 	return result;
@@ -128,7 +142,7 @@ std::vector<Word*> Dict::searchWithDefinition(const std::string& def) {
 			listDef.push_back(d);
 			d->cnt = ((double)(d->data.size()) - (double)editDistance(def, d->data))/(double)(d->data.size());
 		}
-		if ((int)listDef.size() == 10000)
+		if ((int)listDef.size() == 100)
 			break;
 	}
 	std::sort(listDef.begin(), listDef.end(), [](auto a, auto b) {
@@ -166,14 +180,15 @@ Definition* Dict::addDefinition(const std::string& d) {
 	allDefs.push_back(tmp);
 	return tmp;
 }
+
 Word* Dict::addWord(const std::string& w) {
 	std::string s = normalize(w);
 	Word* tmp = nullptr;
 	if (trieWord->find(s, tmp) != success) {
-		tmp = new Word(s);
+		tmp = new Word(w);
 		trieWord->insert(s, tmp);
+		allWords.push_back(tmp);
 	}
-	allWords.push_back(tmp);
 	return tmp;
 }
 
@@ -191,13 +206,11 @@ void Dict:: loadWordlistFromfile(const std::string& filename) {
 	}
 
 	std::string line;
-
 	while (std::getline(infile, line)) {
-		std::istringstream iss(line);
-		std::string wordData;
-		iss >> wordData;
-		std::string defData = iss.str().substr(wordData.length() + 1);
-		this->addWordAndDef(wordData, defData);
+		std::vector<std::string> str = split(line, '\t');
+		if ((int)str.size() < 2)
+			continue;
+		addWordAndDef(str[0], str[1]);
 	}
 	std::cout << "Loading wordlist from file successful" << '\n';
 	infile.close();
@@ -256,3 +269,77 @@ void History::loadWordfromfile(const std::string& hisfile) {
 	std::cout << "Loading wordlist from file successfully" << '\n';
 	infile.close();
 }
+
+bool Dict::deleteDefinition(Definition* def) {
+	std::string str = def->data;
+	for (std::string x : split(str, ' ')) {
+		x = normalize(x);
+		if ((int)x.size() < 3)
+			continue;
+		Word* tmp = nullptr;
+		if (trieDef->find(x, tmp) == non_exist) {
+			std::cerr << "Error: definition is not exist\n";
+			return false;
+		}
+		if (std::find(tmp->defs.begin(), tmp->defs.end(), def) == tmp->defs.end()) {
+			std::cerr << "Error: cannot find definition having the word\n";
+			return false;
+		}
+		tmp->defs.erase(std::find(tmp->defs.begin(), tmp->defs.end(), def));
+	}
+	def->word->defs.erase(std::find(def->word->defs.begin(), def->word->defs.end(), def));
+	allDefs.erase(std::find(allDefs.begin(), allDefs.end(), def));
+	delete def;
+	def = nullptr;
+	return true;
+}
+bool Dict::deleteWord(Word *word) {
+	while (!word->defs.empty()) {
+		deleteDefinition(word->defs.back());
+	}
+	if (std::find(allWords.begin(), allWords.end(), word) == allWords.end()) {
+		std::cerr << "Error: Find word in allWords (deleteWord)";
+		return false;
+	}
+	allWords.erase(std::find(allWords.begin(), allWords.end(), word));
+	if (trieWord->remove(word->data) != success) {
+		std::cerr << "Error: Delete word trie\n";
+		return false;
+	}
+	if (std::find(hiswords->wordlist.begin(), hiswords->wordlist.end(), word) != hiswords->wordlist.end()) {
+		hiswords->wordlist.erase(std::find(hiswords->wordlist.begin(), hiswords->wordlist.end(), word));
+	}
+	delete word;
+	word = nullptr;
+	return true;
+}
+Definition* Dict::getRandomWord() {
+	std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
+	Word* word = allWords[std::uniform_int_distribution<int>(0, (int)allWords.size()-1)(rng)];
+	Definition* def = word->defs[std::uniform_int_distribution<int>(0, (int)word->defs.size() - 1)(rng)];
+	return def;
+}
+std::vector<Word*> Dict::searchByKey(const std::string& prefix) const {
+	std::vector<Word*> results;
+
+	// Special case: user presses Enter before typing 4 characters
+	if (prefix.back() == '\n' && prefix.size() <= 4) {
+		Word* foundWord;
+		if (trieWord->find(prefix.substr(0, prefix.size() - 1), foundWord) == Trie_State::success) {
+			results.push_back(foundWord);
+			return results;
+		}
+		else {
+			return results;
+		}
+	}
+
+	// Get search results from Trie if the prefix is at least 4 characters long
+	if (prefix.size() >= 4) {
+		results = trieWord->searchByKey(prefix);
+	}
+
+	return results;
+}
+
+
