@@ -317,25 +317,8 @@ Definition* Dict::getRandomWord() {
 	return def;
 }
 std::vector<Word*> Dict::searchByKey(const std::string& prefix) const {
-	std::vector<Word*> results;
-
-	// Special case: user presses Enter before typing 4 characters
-	if (prefix.back() == '\n' && prefix.size() <= 4) {
-		Word* foundWord;
-		if (trieWord->find(prefix.substr(0, prefix.size() - 1), foundWord) == Trie_State::success) {
-			results.push_back(foundWord);
-			return results;
-		}
-		else {
-			return results;
-		}
-	}
-
-	// Get search results from Trie if the prefix is at least 4 characters long
-	if (prefix.size() >= 4) {
-		results = trieWord->searchByKey(prefix);
-	}
-
+	std::string x = normalize(prefix);
+	std::vector<Word*> results = trieWord->searchByKey(x);
 	return results;
 }
 

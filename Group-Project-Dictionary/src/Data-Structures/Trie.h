@@ -85,7 +85,7 @@ struct Trie {
 
 	std::vector<DataType> searchByKey(const std::string& str);
 	/*
-		Using bfs to search, SEARCH_LIMIT is up to 30 strings.
+		Using bfs to search, SEARCH_LIMIT is up to 10 strings.
 		Search by a prefix str of some string in the trie.
 		If exist, return vector has data of the string having prefix str in the trie.
 		else return empty vector
