@@ -45,7 +45,7 @@ std::string normalize(const std::string& a); //
 /*
 * return a normalized string of a (use lowercase latin characters and numbers)
 * example:
-* normalize("Kho*&AD") -> "khoad"
+* normalize("Kho*&AD") -> "khoad" 
 */
 bool isPrintable(char x);
 /*
