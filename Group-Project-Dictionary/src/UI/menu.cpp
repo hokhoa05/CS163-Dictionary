@@ -2,9 +2,9 @@
 
 int mainMenu(Dict* &data) 
 {
-    sf::RenderWindow window(sf::VideoMode(800, 800), "App1", sf::Style::Default); 
+    sf::RenderWindow window(sf::VideoMode(1000, 700), "Dictionary App", sf::Style::Default); 
 
-    window.setFramerateLimit(10);
+    window.setFramerateLimit(8);
 
     sf::Font font;
     if (!font.loadFromFile("Roboto-Regular.ttf")) {
@@ -12,17 +12,13 @@ int mainMenu(Dict* &data)
         return -1;
     }
     ////////////////////////////////////////////////////// initialize
+    sf::Color backGroundColor = sf::Color(113, 149, 182,100);
+
+    spriteButton favoriteButton(window);
+    favoriteButton.loadTextures( "src/UI/sprite/Star 2.png","src/UI/sprite/star1.png", "src/UI/sprite/Star 3.png" );
+    favoriteButton.setPosition({ 154, 275 });
 
 
-    sf::Texture defaultTexture;
-    sf::Texture clickedTexture;
-    defaultTexture.loadFromFile("src/UI/star3.png");
-    //defaultTexture.setScale(sf::Vector2f(0.5f, 0.5f));
-    clickedTexture.loadFromFile("src/UI/star4.png");
-
-    spriteButton favoriteButton(window, defaultTexture, clickedTexture);
-    favoriteButton.setPosition({ 100, 250 });
-    favoriteButton.defaultSprite.setScale({ 0.5f, 0.5f });
 
     sf::Text TitleTex;
     TitleTex.setFont(font); TitleTex.setCharacterSize(48); TitleTex.setFillColor(sf::Color::Black);
@@ -60,7 +56,7 @@ int mainMenu(Dict* &data)
                 startSearch = true;
             searchBox.updateTextBox(event);
         }
-        window.clear(sf::Color::White);
+        window.clear(backGroundColor);
     /////////////////////////////////////////////////////////////////
         if (startSearch&&defSearchMode) 
         {
@@ -84,10 +80,10 @@ int mainMenu(Dict* &data)
             defSearchMode = !defSearchMode;
         if (button.update(mousePos))
             openSubWin();
-        favoriteButton.update(mousePos);
+        favoriteButton.update(relMousePos);
     //////////////////////////////////////////////////////////
 
-        //favoriteButton.draw();
+        favoriteButton.draw();
         window.draw(TitleTex); 
         button.draw(window); 
         defSearchButton.draw(window);

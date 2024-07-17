@@ -37,10 +37,9 @@
     <Text Include="data\slang\Data.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="src\UI\star1.png" />
-    <Image Include="src\UI\star2.png" />
-    <Image Include="src\UI\star3.png" />
-    <Image Include="src\UI\star4.png" />
+    <Image Include="src\UI\sprite\Star 2.png" />
+    <Image Include="src\UI\sprite\Star 3.png" />
+    <Image Include="src\UI\sprite\star1.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

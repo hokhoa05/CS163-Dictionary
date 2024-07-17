@@ -142,37 +142,54 @@ int DropdownMenu::handleEvent(const sf::Event& event, const sf::Vector2i& mouseP
     return -1;
 }
 
-void spriteButton::draw()
-{
+bool spriteButton::loadTextures( std::string defaultPath, const std::string clickedPath, const std::string hoverPath) {
+    if (!defaultTexture.loadFromFile(defaultPath)) {
+        return false;
+    }
+    if (!clickedTexture.loadFromFile(clickedPath)) {
+        return false;
+    }
+    if (!hoverTexture.loadFromFile(hoverPath)) {
+        return false;
+    }
+    defaultSprite.setTexture(defaultTexture);
+    clickedSprite.setTexture(clickedTexture);
+    hoverSprite.setTexture(hoverTexture);
+    return true;
+}
+
+void spriteButton::draw() {
     if (isClicked) {
         window.draw(clickedSprite);
+    }
+    else if (defaultSprite.getGlobalBounds().contains(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)))) {
+        window.draw(hoverSprite);
     }
     else {
         window.draw(defaultSprite);
     }
 }
 
-bool spriteButton::update(sf::Vector2i& mousePos)
-{
-    sf::FloatRect bounds = defaultSprite.getGlobalBounds();
-
-    if (bounds.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+bool spriteButton::update(const sf::Vector2f& mousePos) {
+    if (defaultSprite.getGlobalBounds().contains(mousePos)) {
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             isClicked = true;
-            return true;
+        }
+        else {
+            if (isClicked) {
+                isClicked = false;
+                return true; // Button was clicked and released
+            }
         }
     }
-
-    isClicked = false;
-    return false;
+    return false; // No click event
 }
 
-void spriteButton::setPosition(const sf::Vector2f& position)
-{
-    defaultSprite.setPosition(position.x, position.y);
-    clickedSprite.setPosition(position.x, position.y);
+void spriteButton::setPosition(const sf::Vector2f& position) {
+    defaultSprite.setPosition(position);
+    clickedSprite.setPosition(position);
+    hoverSprite.setPosition(position);
 }
-
 
 void openSubWin()
 {

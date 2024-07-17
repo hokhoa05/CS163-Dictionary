@@ -60,16 +60,13 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="src\UI\star2.png">
+    <Image Include="src\UI\sprite\Star 2.png">
       <Filter>Resource Files\Sprite</Filter>
     </Image>
-    <Image Include="src\UI\star1.png">
+    <Image Include="src\UI\sprite\Star 3.png">
       <Filter>Resource Files\Sprite</Filter>
     </Image>
-    <Image Include="src\UI\star3.png">
-      <Filter>Resource Files\Sprite</Filter>
-    </Image>
-    <Image Include="src\UI\star4.png">
+    <Image Include="src\UI\sprite\star1.png">
       <Filter>Resource Files\Sprite</Filter>
     </Image>
   </ItemGroup>
