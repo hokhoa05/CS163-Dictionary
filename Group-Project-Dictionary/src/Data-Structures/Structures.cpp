@@ -161,6 +161,8 @@ std::vector<Word*> Dict::searchWithDefinition(const std::string& def) {
 			break;
 	}
 	trieDef->resetCnt();
+	for (auto d : allDefs)
+		d->cnt = 0;
 	return result;
 }
 
