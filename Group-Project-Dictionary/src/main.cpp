@@ -7,9 +7,7 @@
 #include "UI/menu.h"
 
 int main() {
-	Dict* data = new Dict(ENG_VIE_FILE);
-	//Definition* def = data->getRandomWord();
-	//std::cout << def->word->data << "\t" << def->data;
+	Dict* data = new Dict(SLANG_FILE);
 	mainMenu(data);
 	delete data;
 	return 0;

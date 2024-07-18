@@ -6,3 +6,4 @@ const std::string ENG_ENG_FILE = "./data/eng-eng/Data.txt";
 const std::string ENG_VIE_FILE = "./data/eng-vie/Data.txt";
 const std::string VIE_ENG_FILE = "./data/vie-eng/Data.txt";
 const std::string EMOJI_FILE = "./data/emojis/Data.txt";
+const std::string SLANG_FILE = "./data/slang/Data.txt";
