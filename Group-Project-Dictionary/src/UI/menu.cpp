@@ -2,9 +2,9 @@
 
 int mainMenu(Dict* &data) 
 {
-    sf::RenderWindow window(sf::VideoMode(1000, 700), "Dictionary App", sf::Style::Default); 
+    sf::RenderWindow windowMain(sf::VideoMode(1000, 700), "Dictionary App", sf::Style::Default); 
 
-    window.setFramerateLimit(8);
+    windowMain.setFramerateLimit(8);
 
     sf::Font font;
     if (!font.loadFromFile("Roboto-Regular.ttf")) {
@@ -14,9 +14,17 @@ int mainMenu(Dict* &data)
     ////////////////////////////////////////////////////// initialize
     sf::Color backGroundColor = sf::Color(113, 149, 182,100);
 
-    spriteButton favoriteButton(window);
+    spriteButton favoriteButton(windowMain);
     favoriteButton.loadTextures( "src/UI/sprite/Star 2.png","src/UI/sprite/star1.png", "src/UI/sprite/Star 3.png" );
     favoriteButton.setPosition({ 154, 275 });
+
+    spriteButton changeModeButton(windowMain);
+    changeModeButton.loadTextures("src/UI/sprite/changeMode1.png", "src/UI/sprite/changeMode2.png", "src/UI/sprite/changeMode2.png");
+    changeModeButton.setPosition({ 786,280 });
+
+    spriteButton datasetButton(windowMain);
+    datasetButton.loadTextures("src/UI/sprite/Buttondata.png", "src/UI/sprite/Buttondata2.png", "src/UI/sprite/Buttondata2.png");
+    datasetButton.setPosition({ 6,1 });
 
 
 
@@ -24,10 +32,9 @@ int mainMenu(Dict* &data)
     TitleTex.setFont(font); TitleTex.setCharacterSize(48); TitleTex.setFillColor(sf::Color::Black);
     TitleTex.setPosition(100.0f, 100.0f);
 
-    Button button({ 100, 40 }, { 0, 0 }, "file", font);
-    Button defSearchButton({ 100, 50 }, { 630, 275 }, "DefSearch", font);
-    TextBox searchBox({ 420, 50 }, { 200, 275 }, font);
-    TextBox definitionBox({ 420,330 }, { 200,350 }, font);
+
+    TextBox searchBox({ 520, 50 }, { 240, 280 }, font);
+    TextBox definitionBox({ 520,280 }, { 240,380 }, font);
 
     std :: string test = "This is a definition of the a word. It can be fitted in the definition box. it will automaticaly enter.";
     defBoxUpdate(definitionBox, test, font);
@@ -40,23 +47,23 @@ int mainMenu(Dict* &data)
 
     /////////////////////////////////////////////////// main loop
 
-    while (window.isOpen())
+    while (windowMain.isOpen())
     {
         sf::Event event;
-        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        sf::Vector2i mousePos = sf::Mouse::getPosition(windowMain);
         sf::Vector2f relMousePos = static_cast<sf::Vector2f>(mousePos);
 
-        while (window.pollEvent(event))
+        while (windowMain.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
-                window.close();
+                windowMain.close();
             if (event.type == sf::Event::MouseButtonPressed) //focus on search box
                 searchBox.handleMouseClick(mousePos);          
             if(event.key.code == sf::Keyboard::Enter) //search when enter
                 startSearch = true;
             searchBox.updateTextBox(event);
         }
-        window.clear(backGroundColor);
+        windowMain.clear(backGroundColor);
     /////////////////////////////////////////////////////////////////
         if (startSearch&&defSearchMode) 
         {
@@ -76,24 +83,24 @@ int mainMenu(Dict* &data)
         else
             TitleTex.setString("Search By Key");
 
-        if (defSearchButton.update(mousePos))
+        if (changeModeButton.update(relMousePos))
             defSearchMode = !defSearchMode;
-        if (button.update(mousePos))
+        if (datasetButton.update(relMousePos))
             openSubWin();
         favoriteButton.update(relMousePos);
+        
     //////////////////////////////////////////////////////////
-
+        changeModeButton.draw();
+        datasetButton.draw();
         favoriteButton.draw();
-        window.draw(TitleTex); 
-        button.draw(window); 
-        defSearchButton.draw(window);
-        searchBox.drawTextBox(window);
-        definitionBox.drawTextBox(window);
-        dropdown.draw(window); 
+        windowMain.draw(TitleTex); 
+        searchBox.drawTextBox(windowMain);
+        definitionBox.drawTextBox(windowMain);
+        dropdown.draw(windowMain); 
 
      ////////////////////////////////////////////////////////////
 
-        window.display();
+        windowMain.display();
     }
     return 0;
 }
