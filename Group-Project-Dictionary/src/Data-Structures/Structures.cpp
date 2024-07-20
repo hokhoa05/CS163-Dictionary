@@ -323,5 +323,25 @@ std::vector<Word*> Dict::searchByKey(const std::string& prefix) const {
 	std::vector<Word*> results = trieWord->searchByKey(x);
 	return results;
 }
+bool Dict::addFavorite(const std::string& word) {
+	std::ofstream outfile(FAVORITE_FILE, std::ios::app); // Open in append mode
 
+	if (!outfile.is_open()) {
+		return false;
+	}
+
+	outfile << word << std::endl;  // Add the word and a newline
+	outfile.close();
+	return true;
+}
+bool Dict::editDefinition(Word* word, Definition* oldDef, const std::string& newDef) {
+	if (!deleteDefinition(oldDef)) {
+		return false;
+	}
+
+	Definition* newDefObj = addDefinition(newDef);
+	word->defs.push_back(newDefObj);
+	newDefObj->word = word;
+	return true;
+}
 

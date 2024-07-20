@@ -114,6 +114,14 @@ struct Dict {
 	/*
 		return 
 	*/
+	bool addFavorite(const std::string& word);
+	/*
+		return true if add successfully, false if cannot open file
+	*/
+	bool Dict::editDefinition(Word* word, Definition* oldDef, const std::string& newDef);
+	/*
+		return true if edit successfully, false if not
+	*/
 };
 
 struct History {
