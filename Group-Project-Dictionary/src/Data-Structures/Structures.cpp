@@ -323,7 +323,7 @@ std::vector<Word*> Dict::searchByKey(const std::string& prefix) const {
 	std::vector<Word*> results = trieWord->searchByKey(x);
 	return results;
 }
-bool Dict::addFavorite(const std::string& word) {
+bool Dict::addFavorite(std::Word& word, const std::string& FAVORITE_FILE) {
 	std::ofstream outfile(FAVORITE_FILE, std::ios::app); // Open in append mode
 
 	if (!outfile.is_open()) {
@@ -331,6 +331,7 @@ bool Dict::addFavorite(const std::string& word) {
 	}
 
 	outfile << word << std::endl;  // Add the word and a newline
+	word.isFavorite
 	outfile.close();
 	return true;
 }
