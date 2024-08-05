@@ -22,15 +22,36 @@ int mainMenu(Dict* &data)
     changeModeButton.loadTextures("src/UI/sprite/changeMode1.png", "src/UI/sprite/changeMode2.png", "src/UI/sprite/changeMode2.png");
     changeModeButton.setPosition({ 786,280 });
 
-    spriteButton datasetButton(windowMain);
+    spriteButton datasetButton(windowMain);    datasetButton.setPosition({ 6,1 });
     datasetButton.loadTextures("src/UI/sprite/Buttondata.png", "src/UI/sprite/Buttondata2.png", "src/UI/sprite/Buttondata2.png");
-    datasetButton.setPosition({ 6,1 });
 
+
+    spriteButton addWordButton(windowMain);    addWordButton.setPosition({ 6,142 });
+    addWordButton.loadTextures("src/UI/sprite/Buttonadd_normal.png", "src/UI/sprite/Buttonadd_pressed.png", "src/UI/sprite/Buttonadd_pressed.png");
+
+    
+    spriteButton historyButton(windowMain);     historyButton.setPosition({ 6,95 }); 
+    historyButton.loadTextures("src/UI/sprite/Buttonhistory_normal.png", "src/UI/sprite/Buttonhistory_pressed.png", "src/UI/sprite/Buttonhistory_pressed.png");
+
+    spriteButton showFavoriteButton(windowMain);  showFavoriteButton.setPosition({ 6,48 }); 
+    showFavoriteButton.loadTextures("src/UI/sprite/ButtonFavor_normal.png", "src/UI/sprite/ButtonFavor_pressed.png", "src/UI/sprite/ButtonFavor_pressed.png");
+
+    spriteButton deleteButton(windowMain); deleteButton.setPosition({ 168,557 });
+    deleteButton.loadTextures("src/UI/sprite/Buttondelete_normal.png", "src/UI/sprite/Buttondelete_pressed.png", "src/UI/sprite/Buttondelete_pressed.png");
+
+    spriteButton editButton(windowMain); editButton.setPosition({ 168,608 });
+    editButton.loadTextures("src/UI/sprite/ButtonEdit_normal.png", "src/UI/sprite/ButtonEdit_pressed.png", "src/UI/sprite/ButtonEdit_pressed.png");
+
+   
+    sf::RectangleShape titleBox;
+    titleBox.setFillColor(sf::Color(32, 201, 170));
+    titleBox.setPosition({ 240,100 });
+    titleBox.setSize({ 520,100 });
 
 
     sf::Text TitleTex;
     TitleTex.setFont(font); TitleTex.setCharacterSize(48); TitleTex.setFillColor(sf::Color::Black);
-    TitleTex.setPosition(100.0f, 100.0f);
+    TitleTex.setPosition(280.0f, 110.0f);
 
 
     TextBox searchBox({ 520, 50 }, { 240, 280 }, font);
@@ -88,16 +109,32 @@ int mainMenu(Dict* &data)
         if (datasetButton.update(relMousePos))
             openSubWin();
         favoriteButton.update(relMousePos);
+
+        addWordButton.update(relMousePos);
+
+        showFavoriteButton.update(relMousePos);
+
+        historyButton.update(relMousePos);
+
+        deleteButton.update(relMousePos);
+        editButton.update(relMousePos);
         
     //////////////////////////////////////////////////////////
         changeModeButton.draw();
         datasetButton.draw();
         favoriteButton.draw();
-        windowMain.draw(TitleTex); 
+
+        windowMain.draw(titleBox);
+        windowMain.draw(TitleTex);
         searchBox.drawTextBox(windowMain);
         definitionBox.drawTextBox(windowMain);
         dropdown.draw(windowMain); 
-
+        addWordButton.draw();
+        showFavoriteButton.draw();
+        historyButton.draw();
+        deleteButton.draw();
+        editButton.draw();
+        
      ////////////////////////////////////////////////////////////
 
         windowMain.display();
