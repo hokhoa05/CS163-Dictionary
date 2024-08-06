@@ -94,6 +94,11 @@ bool TextBox::updateTextBox(sf::Event event) {
     }
     return false;
 }
+bool TextBox::updateTextBox()
+{
+    text.setString(inputString);
+    return true;
+}
 void TextBox::handleMouseClick(const sf::Vector2i& mousePos) {
     if (textBoxShape.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos))) {
         focused = true;
