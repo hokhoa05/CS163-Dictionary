@@ -28,6 +28,7 @@ public:
     void drawTextBox(sf::RenderWindow& window) const;
 
     bool updateTextBox(sf::Event event);
+    bool updateTextBox();
 
     void handleMouseClick(const sf::Vector2i& mousePos);
     bool isFocused() const { return focused; }
