@@ -12,50 +12,37 @@ int mainMenu(Dict* &data)
         return -1;
     }
     ////////////////////////////////////////////////////// initialize
-    sf::Color backGroundColor = sf::Color(113, 149, 182,100);
+    sf::Color backGroundColor = sf::Color(113, 149, 182);
 
-    spriteButton favoriteButton(windowMain);
+    spriteButton favoriteButton(windowMain);    favoriteButton.setPosition({ 154, 275 });
     favoriteButton.loadTextures( "src/UI/sprite/Star 2.png","src/UI/sprite/star1.png", "src/UI/sprite/Star 3.png" );
-    favoriteButton.setPosition({ 154, 275 });
-
-    spriteButton changeModeButton(windowMain);
+    spriteButton changeModeButton(windowMain);    changeModeButton.setPosition({ 786,280 });
     changeModeButton.loadTextures("src/UI/sprite/changeMode1.png", "src/UI/sprite/changeMode2.png", "src/UI/sprite/changeMode2.png");
-    changeModeButton.setPosition({ 786,280 });
-
     spriteButton datasetButton(windowMain);    datasetButton.setPosition({ 6,1 });
     datasetButton.loadTextures("src/UI/sprite/Buttondata.png", "src/UI/sprite/Buttondata2.png", "src/UI/sprite/Buttondata2.png");
-
-
     spriteButton addWordButton(windowMain);    addWordButton.setPosition({ 6,142 });
-    addWordButton.loadTextures("src/UI/sprite/Buttonadd_normal.png", "src/UI/sprite/Buttonadd_pressed.png", "src/UI/sprite/Buttonadd_pressed.png");
-
-    
+    addWordButton.loadTextures("src/UI/sprite/Buttonadd_normal.png", "src/UI/sprite/Buttonadd_pressed.png", "src/UI/sprite/Buttonadd_pressed.png");  
     spriteButton historyButton(windowMain);     historyButton.setPosition({ 6,95 }); 
     historyButton.loadTextures("src/UI/sprite/Buttonhistory_normal.png", "src/UI/sprite/Buttonhistory_pressed.png", "src/UI/sprite/Buttonhistory_pressed.png");
-
     spriteButton showFavoriteButton(windowMain);  showFavoriteButton.setPosition({ 6,48 }); 
     showFavoriteButton.loadTextures("src/UI/sprite/ButtonFavor_normal.png", "src/UI/sprite/ButtonFavor_pressed.png", "src/UI/sprite/ButtonFavor_pressed.png");
-
     spriteButton deleteButton(windowMain); deleteButton.setPosition({ 168,557 });
     deleteButton.loadTextures("src/UI/sprite/Buttondelete_normal.png", "src/UI/sprite/Buttondelete_pressed.png", "src/UI/sprite/Buttondelete_pressed.png");
-
     spriteButton editButton(windowMain); editButton.setPosition({ 168,608 });
     editButton.loadTextures("src/UI/sprite/ButtonEdit_normal.png", "src/UI/sprite/ButtonEdit_pressed.png", "src/UI/sprite/ButtonEdit_pressed.png");
-
     spriteButton nextButton(windowMain); nextButton.setPosition({ 786,603 });
     nextButton.loadTextures("src/UI/sprite/ButtonNext_normal.png", "src/UI/sprite/ButtonNext_status.png", "src/UI/sprite/ButtonNext_pressed.png");
+    spriteButton randomButton(windowMain); randomButton.setPosition({ 710,279 });
+    randomButton.loadTextures("src/UI/sprite/Rand_normal.png", "src/UI/sprite/Rand_pressed.png", "src/UI/sprite/Rand_pressed.png");
 
-   
     sf::RectangleShape titleBox;
     titleBox.setFillColor(sf::Color(32, 201, 170));
     titleBox.setPosition({ 240,100 });
     titleBox.setSize({ 520,100 });
 
-
     sf::Text TitleTex;
     TitleTex.setFont(font); TitleTex.setCharacterSize(48); TitleTex.setFillColor(sf::Color::Black);
     TitleTex.setPosition(280.0f, 110.0f);
-
 
     TextBox searchBox({ 520, 50 }, { 240, 280 }, font);
     TextBox definitionBox({ 520,280 }, { 240,380 }, font);
@@ -109,8 +96,11 @@ int mainMenu(Dict* &data)
         {
             k = 0;
             resultWord = result[i];
-            searchBox.inputString = resultWord->data;
-            defString = resultWord->defs[k]->data; 
+            if (resultWord)
+            {
+                searchBox.inputString = resultWord->data;
+                defString = resultWord->defs[k]->data;
+            }
         }
 
 
@@ -134,14 +124,21 @@ int mainMenu(Dict* &data)
         deleteButton.update(relMousePos);
         editButton.update(relMousePos);
 
+        if (randomButton.update(relMousePos))
+        {
+            Definition* randomDef = data->getRandomWord();
+            resultWord = randomDef->word;
+            defString = randomDef->data;
+            searchBox.inputString = resultWord->data;
+        }
+
+        searchBox.updateTextBox();
         if (nextButton.update(relMousePos) && resultWord)
         {
             k++; if (k >= resultWord->defs.size()) k = 0;
             defString = resultWord->defs[k]->data;
         }
-        searchBox.updateTextBox();
-        defBoxUpdate(definitionBox, defString, font);
-        
+        defBoxUpdate(definitionBox, defString, font);          
         
     //////////////////////////////////////////////////////////
         changeModeButton.draw();
@@ -159,6 +156,7 @@ int mainMenu(Dict* &data)
         deleteButton.draw();
         editButton.draw();
         nextButton.draw();
+        randomButton.draw();
      ////////////////////////////////////////////////////////////
 
         windowMain.display();
