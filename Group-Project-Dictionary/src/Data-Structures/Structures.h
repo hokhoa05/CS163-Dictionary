@@ -114,7 +114,7 @@ struct Dict {
 	/*
 		return 
 	*/
-	bool addFavorite(const std::string& word);
+	bool addFavorite(Word* &word, const std::string& FAVORITE_FILE);
 	/*
 		return true if add successfully, false if cannot open file
 	*/

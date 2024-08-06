@@ -323,18 +323,19 @@ std::vector<Word*> Dict::searchByKey(const std::string& prefix) const {
 	std::vector<Word*> results = trieWord->searchByKey(x);
 	return results;
 }
-bool Dict::addFavorite(std::Word& word, const std::string& FAVORITE_FILE) {
+bool Dict::addFavorite(Word *&word, const std::string& FAVORITE_FILE) {
 	std::ofstream outfile(FAVORITE_FILE, std::ios::app); // Open in append mode
 
 	if (!outfile.is_open()) {
 		return false;
 	}
 
-	outfile << word << std::endl;  // Add the word and a newline
-	word.isFavorite
+	outfile << word->data << '\n';  // Add the word and a newline
+	word->isFavorite = true;
 	outfile.close();
 	return true;
 }
+
 bool Dict::editDefinition(Word* word, Definition* oldDef, const std::string& newDef) {
 	if (!deleteDefinition(oldDef)) {
 		return false;
