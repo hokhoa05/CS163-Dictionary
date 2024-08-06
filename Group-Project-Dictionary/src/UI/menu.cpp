@@ -1,6 +1,7 @@
 #include "menu.h"
 
-int mainMenu(Dict* &data) 
+
+int mainMenu(Dict* &data)
 {
     sf::RenderWindow windowMain(sf::VideoMode(1000, 700), "Dictionary App", sf::Style::Default); 
 
@@ -98,8 +99,8 @@ int mainMenu(Dict* &data)
             resultWord = result[i];
             if (resultWord)
             {
-                searchBox.inputString = resultWord->data;
-                defString = resultWord->defs[k]->data;
+                searchBox.inputString = resultWord->data; 
+                defString = resultWord->defs[k]->data;  
             }
         }
 
@@ -112,7 +113,7 @@ int mainMenu(Dict* &data)
         if (changeModeButton.update(relMousePos))
             defSearchMode = !defSearchMode;
         if (datasetButton.update(relMousePos))
-            openSubWin();
+            datasetMenu(data,font);
         favoriteButton.update(relMousePos);
 
         addWordButton.update(relMousePos);

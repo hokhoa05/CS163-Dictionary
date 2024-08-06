@@ -337,3 +337,51 @@ void updateTitle(sf::Text& Title, int& Mode)
         window.display();
     }
 }*/
+bool datasetMenu(Dict*& data, sf::Font& font)
+{
+    sf::RenderWindow window(sf::VideoMode(300, 500), "Dataset", sf::Style::Default);
+    window.setFramerateLimit(12);
+    DropdownMenu Datasets({ 300, 100 }, { 0, 0 }, font, "mainButton");
+    Datasets.addButton("ENG-ENG");
+    Datasets.addButton("ENG-VIET");
+    Datasets.addButton("VIET-ENG");
+    Datasets.addButton("EMOJI");
+    Datasets.addButton("SLANG");
+    Datasets.isOpen = true;
+    delete data;
+    while (window.isOpen())
+    {
+        sf::Event event;
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+        int i = Datasets.handleEvent(event, mousePos);
+        switch (i)
+        {
+        case 0:
+            data = new Dict(ENG_ENG_FILE);
+            return true;
+        case 1:
+            data = new Dict(ENG_VIE_FILE);
+            return true;
+        case 2:
+            data = new Dict(VIE_ENG_FILE);
+            return true;
+        case 3:
+            data = new Dict(EMOJI_FILE);
+            return true;
+        case 4:
+            data = new Dict(SLANG_FILE);
+            return true;
+        default:
+            break;
+        }
+
+        Datasets.draw(window); 
+        window.display(); 
+    };
+    return false;
+}
