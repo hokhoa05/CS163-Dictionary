@@ -370,4 +370,20 @@ std::vector<std::string> Dict::defGuessWord() {
 	return res;
 }
 
-
+std::vector<std::string> Dict::wordGuessDef() {
+	std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
+	std::vector<std::string> res;
+	Word* w = allWords[std::uniform_int_distribution<int>(0, (int)allWords.size() - 1)(rng)];
+	Definition* def = w->defs[std::uniform_int_distribution<int>(0, (int)w->defs.size() - 1)(rng)];
+	res.push_back(w->data);
+	res.push_back(def->data);
+	for (int i = 0; i < 3; i++) {
+		def = allDefs[std::uniform_int_distribution<int>(0, (int)allDefs.size() - 1)(rng)];
+		if (def->word == w) {
+			i--;
+			continue;
+		}
+		res.push_back(def->data);
+	}
+	return res;
+}
