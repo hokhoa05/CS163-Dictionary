@@ -90,6 +90,8 @@ bool defBoxUpdate(TextBox& defBox, std::string newDef, sf::Font& font);
 void updateTitle(sf::Text& Title, int& Mode);
 //std::string defSearchwindow(Dict*& data, sf::Font& font);
 bool datasetMenu(Dict*& data, sf::Font& font);
+bool addWordMenu(Dict*& data, sf::Font& font);
+bool defEditMenu(Definition*& def,Dict*& data, sf::Font& font);
 int mainMenu(Dict*& data);
 
-
+int bugNet();
