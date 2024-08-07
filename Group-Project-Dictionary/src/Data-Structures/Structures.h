@@ -122,6 +122,20 @@ struct Dict {
 	/*
 		return true if edit successfully, false if not
 	*/
+	std::vector<std::string> defGuessWord(); 
+	/*
+		return a vector with 5 strings:
+		first string is a definition
+		second string is true word for the definition
+		next 3 strings are wrong
+	*/
+	std::vector<std::string> wordGuessDef();
+	/*
+		return a vector with 5 strings:
+		first string is a word
+		second string is true definition for the word
+		next 3 strings are wrong
+	*/
 };
 
 struct History {

@@ -347,3 +347,27 @@ bool Dict::editDefinition(Word* word, Definition* oldDef, const std::string& new
 	return true;
 }
 
+std::vector<std::string> Dict::defGuessWord() {
+	std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
+	std::vector<std::string> res;
+	Word* w = allWords[std::uniform_int_distribution<int>(0, (int)allWords.size() - 1)(rng)];
+	Definition* def = w->defs[std::uniform_int_distribution<int>(0, (int)w->defs.size() - 1)(rng)];
+	res.push_back(def->data);
+	res.push_back(w->data);
+	for (int i = 0; i < 3; i++) {
+		w = allWords[std::uniform_int_distribution<int>(0, (int)allWords.size() - 1)(rng)];
+		bool ok = 1;
+		for (auto d : w->defs) if (d == def) {
+			ok = 0;
+			break;
+		}
+		if (!ok) {
+			i--;
+			continue;
+		}
+		res.push_back(w->data);
+	}
+	return res;
+}
+
+
