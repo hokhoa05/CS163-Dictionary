@@ -275,6 +275,12 @@ bool defBoxUpdate(TextBox& defBox, std::string newDef, sf::Font& font)
 	defBox.text.setString(newDef);
 	return true;
 }
+bool buttonTextWrap(Button& button, std::string text, sf::Font& font)
+{
+	text = wrapText(text, font, button.buttonText.getCharacterSize(), button.buttonShape.getSize().x);
+	button.buttonText.setString(text);
+	return true;
+}
 void updateTitle(sf::Text& Title, int& Mode)
 {
 	switch (Mode)
@@ -287,18 +293,54 @@ void updateTitle(sf::Text& Title, int& Mode)
 		break;
 	}
 }
-/*std::string defSearchwindow(Dict * &data, sf::Font & font)
+bool getNewQuestion(Dict*& data, int mode, std::string& question, std::string& answer, std::vector<std::string>& wrong)
 {
-	sf::RenderWindow window(sf::VideoMode(300, 570), "Definition Search", sf::Style::Default);
-	window.setFramerateLimit(60);
+	if (mode == 1)// def guess word
+	{
+		std::vector<std::string> ret = data->defGuessWord();
+		question = ret[0];
+		answer = ret[1];
+		wrong.push_back(ret[2]);
+		wrong.push_back(ret[3]);
+		wrong.push_back(ret[4]);
+		return true;
+	}
+	else if (mode == 2)
+	{
+		std::vector<std::string> ret = data->wordGuessDef();
+		question = ret[0];
+		answer = ret[1];
+		wrong.push_back(ret[2]);
+		wrong.push_back(ret[3]);
+		wrong.push_back(ret[4]);
+		return true;
+	}
+	else return false;
 
-	TextBox searchBox({ 300, 50 }, { 0, 0 }, font);
-	searchBox.focused = true;
-	std::vector<Word*> result;
-	DropdownMenu choises({ 300, 50 }, { 0, 50 }, font, "Main Button");
-	choises.isOpen = true;
-	bool newResult = false;
-	int k = -1;
+}
+void miniGame(Dict*& data, sf::Font& font,int mode)
+{
+	sf::RenderWindow window(sf::VideoMode(650, 450), "Mini Game", sf::Style::Default);
+	window.setFramerateLimit(12);
+
+	std::string question, answer;
+	std::vector<std::string> wrong;
+
+	getNewQuestion(data, mode, question, answer, wrong);
+
+	spriteButton replay(window); replay.setPosition({ 555,94 });
+	replay.loadTextures("", "", "");
+
+	TextBox questBox({ 480,120 }, { 35,30 }, font);
+
+	std::vector<Button> choises;
+	for (int i = 0;i<4;i++)
+		choises.push_back(Button({ 280,100 }, { 0,0 }, "", font));
+
+	choises[0].buttonShape.setPosition({ 35,180 });
+	choises[1].buttonShape.setPosition({ 335,180 });
+	choises[2].buttonShape.setPosition({ 35,350 });
+	choises[3].buttonShape.setPosition({ 335,350 });
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -306,37 +348,10 @@ void updateTitle(sf::Text& Title, int& Mode)
 		{
 			if (event.type == sf::Event::Closed)
 				window.close();
-			if (event.type == sf::Event::KeyPressed)
-			{
-				if (event.key.code == sf::Keyboard::Enter)
-				{
-					result.clear();
-					result = data->searchWithDefinition(searchBox.inputString);
-					newResult = true;
-				}
-			}
-			searchBox.updateTextBox(event);
 		}
-		window.clear(sf::Color::Blue);
-		sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-		if (newResult)
-		{
-			choises.buttons.clear();
-			for (int i = 0; (i < 10 && i < result.size()); i++)
-			{
-				choises.addButton(result[i]->data);
-			}
-			newResult = false;
-		}
-		k = choises.handleEvent(event,mousePos);
-		if (k >= 0)
-			return choises.buttons[k].buttonText.getString();
-
-		searchBox.drawTextBox(window);
-		choises.draw(window);
-		window.display();
 	}
-}*/
+}
+
 bool addWordMenu(Dict*& data, sf::Font& font)
 {
 	sf::RenderWindow window(sf::VideoMode(400, 500), "New Word", sf::Style::Default);

@@ -87,7 +87,10 @@ void suggestDropdown(DropdownMenu& dropdown);
 std::string wrapText(std::string& text,sf::Font& font, unsigned int characterSize, float maxWidth);
 
 bool defBoxUpdate(TextBox& defBox, std::string newDef, sf::Font& font);
+bool buttonTextWrap(Button& button, std::string text, sf::Font& font);
 void updateTitle(sf::Text& Title, int& Mode);
+bool getNewQuestion(Dict*& data, int mode, std::string& question, std::string& answer, std::vector<std::string>& wrong);
+void miniGame(Dict*& data, sf::Font& font,int mode);
 //std::string defSearchwindow(Dict*& data, sf::Font& font);
 bool datasetMenu(Dict*& data, sf::Font& font);
 bool addWordMenu(Dict*& data, sf::Font& font);
