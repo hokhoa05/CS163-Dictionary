@@ -269,10 +269,12 @@ std::string wrapText(std::string& text, sf::Font& font, unsigned int characterSi
 
 	return wrappedText;
 }
+
 bool defBoxUpdate(TextBox& defBox, std::string newDef, sf::Font& font)
 {
 	newDef = wrapText(newDef, font, defBox.text.getCharacterSize(), defBox.textBoxShape.getSize().x);
 	defBox.text.setString(newDef);
+	defBox.inputString = newDef;
 	return true;
 }
 bool buttonTextWrap(Button& button, std::string text, sf::Font& font)
@@ -318,6 +320,19 @@ bool getNewQuestion(Dict*& data, int mode, std::string& question, std::string& a
 	else return false;
 
 }
+
+void putChoise(std::vector<Button>& choises, std::string& answer, std::vector<std::string>& wrong, int rng,sf::Font font)
+{
+	choises[rng].buttonText.setString(answer);
+	buttonTextWrap(choises[rng], choises[rng].buttonText.getString(), font);
+	for (int i = 0; i < 4; i++)
+	{
+		if (i == rng)
+			continue;
+		choises[i].buttonText.setString(wrong[i]);
+		buttonTextWrap(choises[i], choises[i].buttonText.getString(), font);
+	}
+}
 void miniGame(Dict*& data, sf::Font& font,int mode)
 {
 	sf::RenderWindow window(sf::VideoMode(650, 450), "Mini Game", sf::Style::Default);
@@ -332,23 +347,72 @@ void miniGame(Dict*& data, sf::Font& font,int mode)
 	replay.loadTextures("", "", "");
 
 	TextBox questBox({ 480,120 }, { 35,30 }, font);
+	questBox.inputString = question;
+	defBoxUpdate(questBox, question, font);
 
 	std::vector<Button> choises;
-	for (int i = 0;i<4;i++)
+	for (int i = 0; i < 4; i++)
+	{
 		choises.push_back(Button({ 280,100 }, { 0,0 }, "", font));
-
+		choises[i].defaultColor = sf::Color::White;
+		choises[i].hoverColor = sf::Color(218, 218, 218);
+		choises[i].clickColor = sf::Color(155, 155, 155);
+	}
+	int rng = rand() % 4;
 	choises[0].buttonShape.setPosition({ 35,180 });
 	choises[1].buttonShape.setPosition({ 335,180 });
 	choises[2].buttonShape.setPosition({ 35,350 });
 	choises[3].buttonShape.setPosition({ 335,350 });
+
+	putChoise(choises, answer, wrong, rng, font);
+
 	while (window.isOpen())
 	{
 		sf::Event event;
+		sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+		sf::Vector2f relMousePos = static_cast<sf::Vector2f>(mousePos); 
+
 		while (window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
+		window.clear(sf::Color(113, 149, 182));
+		int clicked = -1;
+
+		if(choises[0].update(mousePos))
+			clicked = 0;
+		else if (choises[1].update(mousePos))
+			clicked = 1;
+		else if (choises[2].update(mousePos))
+			clicked = 2;
+		else if (choises[3].update(mousePos))
+			clicked = 3;
+
+		if (clicked == rng)
+			choises[clicked].defaultColor = sf::Color(32, 201, 170);		
+		else if (clicked != -1)
+			choises[clicked].defaultColor = sf::Color(238, 50, 69);
+
+		if (replay.update(relMousePos))
+		{
+			for (int i = 0; i < 4; i++)
+				choises[i].defaultColor = sf::Color::White;
+			rng = rand() % 4;
+			getNewQuestion(data, mode, question, answer, wrong);
+			questBox.inputString = question;
+			defBoxUpdate(questBox, question, font);
+			putChoise(choises, answer, wrong, rng, font);
+		}
+
+		replay.draw();
+		questBox.drawTextBox(window);
+		choises[0].draw(window);
+		choises[1].draw(window);
+		choises[2].draw(window);
+		choises[3].draw(window);
+
+		window.display();
 	}
 }
 
@@ -387,7 +451,7 @@ bool addWordMenu(Dict*& data, sf::Font& font)
 			keyBox.updateTextBox(event);
 
 		}
-		window.clear(sf::Color::White);
+
 		defBoxUpdate(definitionBox, newDef, font);
 
 		if (applyButton.update(relMousePos))
@@ -408,7 +472,7 @@ bool addWordMenu(Dict*& data, sf::Font& font)
 bool defEditMenu(Definition*& def, Dict*& data, sf::Font& font)
 {
 
-	sf::RenderWindow window(sf::VideoMode(400, 500), "Edit Definition", sf::Style::Default);
+	sf::RenderWindow window(sf::VideoMode(300, 500), "Edit Definition", sf::Style::Default);
 	window.setFramerateLimit(12);
 
 	spriteButton deleteDef(window); deleteDef.setPosition({ 10,420 });

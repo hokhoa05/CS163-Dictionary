@@ -85,7 +85,7 @@ void openSubWin();
 //void update2(int& cooldown, sf::CircleShape& shape, sf::RenderWindow& window);
 void suggestDropdown(DropdownMenu& dropdown);
 std::string wrapText(std::string& text,sf::Font& font, unsigned int characterSize, float maxWidth);
-
+void putChoise(std::vector<Button>& choises, std::string& answer, std::vector<std::string>& wrong, int rng,sf::Font font);
 bool defBoxUpdate(TextBox& defBox, std::string newDef, sf::Font& font);
 bool buttonTextWrap(Button& button, std::string text, sf::Font& font);
 void updateTitle(sf::Text& Title, int& Mode);
