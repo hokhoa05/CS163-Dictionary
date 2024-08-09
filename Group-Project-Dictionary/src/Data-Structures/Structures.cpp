@@ -343,10 +343,8 @@ vector<string> Dict::viewFavorite(const std::string& FAVORITE_FILE) {
 
 	if (!infile.is_open()) return fav;
 	string temp;
-	while (!infile.eof()) {
-		getline(infile, temp, '\n');
+	while (getline(infile, temp, '\n')) {
 		fav.push_back(temp);
-	}
 	infile.close();
 	return fav;
 }
@@ -357,8 +355,7 @@ bool Dict::deleteFavorite(Word*& word, const std::string& FAVORITE_FILE) {
 
 	if (!infile.is_open()) return false;
 
-	while (!infile.eof()) {
-		getline(infile, temp, '\n');
+	while (getline(infile, temp, '\n')) {
 		if (temp == word->data) {
 			word->isFavorite = 0;
 		}
