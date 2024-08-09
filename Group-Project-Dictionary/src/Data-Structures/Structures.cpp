@@ -329,11 +329,25 @@ bool Dict::addFavorite(Word *&word, const std::string& FAVORITE_FILE) {
 	if (!outfile.is_open()) {
 		return false;
 	}
+	if (word->isFavorite == 0) {
+		outfile << word->data << '\n';  // Add the word and a newline
+		word->isFavorite = true;
+		outfile.close();
+		return true;
+	}
+	return false;
+}
+vector<string> Dict::viewFavorite(const std::string& FAVORITE_FILE) {
+	vector<string> fav;
+	std::ifstream infile(FAVORITE_FILE);
 
-	outfile << word->data << '\n';  // Add the word and a newline
-	word->isFavorite = true;
-	outfile.close();
-	return true;
+	if (!infile.is_open()) return fav;
+	string temp;
+	while (!infile.eof()) {
+		getline(infile, temp, '\n');
+		fav.push_back(temp);
+	}
+	return fav;
 }
 
 bool Dict::editDefinition(Word* word, Definition* oldDef, const std::string& newDef) {

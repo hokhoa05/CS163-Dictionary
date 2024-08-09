@@ -122,6 +122,11 @@ struct Dict {
 	/*
 		return true if edit successfully, false if not
 	*/
+	vector<string> Dict::viewFavorite(const std::string& FAVORITE_FILE);
+	/*
+		read all words in favorite list, push in a vector and return it
+	*/
+
 	std::vector<std::string> defGuessWord(); 
 	/*
 		return a vector with 5 strings:
