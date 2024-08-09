@@ -198,6 +198,7 @@ Trie_State Trie<DataType>::find(const std::string& str, DataType& data) {
 		if (nxt == -1) {
 			return non_exist;
 		}
+
 		if (cur->pNext[nxt] == nullptr) {
 			return non_exist;
 		}

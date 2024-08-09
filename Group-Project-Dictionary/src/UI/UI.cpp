@@ -344,7 +344,7 @@ void miniGame(Dict*& data, sf::Font& font,int mode)
 	getNewQuestion(data, mode, question, answer, wrong);
 
 	spriteButton replay(window); replay.setPosition({ 555,94 });
-	replay.loadTextures("", "", "");
+	replay.loadTextures("src/UI/sprite/ButtonRetry.png", "src/UI/sprite/ButtonRetry.png", "src/UI/sprite/ButtonRetry.png");
 
 	TextBox questBox({ 480,120 }, { 35,30 }, font);
 	questBox.inputString = question;

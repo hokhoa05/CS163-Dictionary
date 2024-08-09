@@ -35,6 +35,11 @@ int mainMenu(Dict*& data)
 	nextButton.loadTextures("src/UI/sprite/ButtonNext_normal.png", "src/UI/sprite/ButtonNext_status.png", "src/UI/sprite/ButtonNext_pressed.png");
 	spriteButton randomButton(windowMain); randomButton.setPosition({ 710,279 });
 	randomButton.loadTextures("src/UI/sprite/Rand_normal.png", "src/UI/sprite/Rand_pressed.png", "src/UI/sprite/Rand_pressed.png");
+	spriteButton minigame1(windowMain); minigame1.setPosition({ 6,608 });
+	minigame1.loadTextures("src/UI/sprite/ButtonMinigame1.png", "src/UI/sprite/ButtonMini1_clicked.png", "src/UI/sprite/ButtonMini1_clicked.png");
+	spriteButton minigame2(windowMain); minigame2.setPosition({ 6,655 });
+	minigame2.loadTextures("src/UI/sprite/ButtonMini2.png", "src/UI/sprite/ButtonMini2_clicked.png", "src/UI/sprite/ButtonMini2_clicked.png");
+
 
 	sf::RectangleShape titleBox;
 	titleBox.setFillColor(sf::Color(32, 201, 170));
@@ -136,6 +141,10 @@ int mainMenu(Dict*& data)
 			defString = randomDef->data;
 			searchBox.inputString = resultWord->data;
 		}
+		if (minigame1.update(relMousePos))
+			miniGame(data, font, 1);
+		if (minigame2.update(relMousePos))
+			miniGame(data, font, 2);
 
 		searchBox.updateTextBox();
 		if (nextButton.update(relMousePos) && resultWord)
@@ -162,6 +171,8 @@ int mainMenu(Dict*& data)
 		editButton.draw();
 		nextButton.draw();
 		randomButton.draw();
+		minigame1.draw();
+		minigame2.draw();
 		////////////////////////////////////////////////////////////
 
 		windowMain.display();
