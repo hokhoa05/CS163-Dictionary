@@ -126,7 +126,10 @@ struct Dict {
 	/*
 		read all words in favorite list, push in a vector and return it
 	*/
-
+	bool Dict::deleteFavorite(Word*& word, const std::string& FAVORITE_FILE);
+	/*
+		read words in favorite list, check if it is the one to be deleted, change isFavorite and rewrite new list
+	*/
 	std::vector<std::string> defGuessWord(); 
 	/*
 		return a vector with 5 strings:

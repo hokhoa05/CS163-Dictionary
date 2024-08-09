@@ -347,9 +347,34 @@ vector<string> Dict::viewFavorite(const std::string& FAVORITE_FILE) {
 		getline(infile, temp, '\n');
 		fav.push_back(temp);
 	}
+	infile.close();
 	return fav;
 }
+bool Dict::deleteFavorite(Word*& word, const std::string& FAVORITE_FILE) {
+	std::ifstream infile(FAVORITE_FILE);
+	string temp;
+	vector<string> fav;
 
+	if (!infile.is_open()) return false;
+
+	while (!infile.eof()) {
+		getline(infile, temp, '\n');
+		if (temp == word->data) {
+			word->isFavorite = 0;
+		}
+		else fav.push_back(temp);
+	}
+	infile.close();
+
+	std::ofstream outfile(FAVORITE_FILE);
+	if (!outfile.is_open()) return false;
+	for (string x : fav) {
+		outfile << x << endl;
+	}
+	outfile.close();
+	return true;
+
+}
 bool Dict::editDefinition(Word* word, Definition* oldDef, const std::string& newDef) {
 	if (!deleteDefinition(oldDef)) {
 		return false;
