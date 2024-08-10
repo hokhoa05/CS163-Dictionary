@@ -303,6 +303,7 @@ void updateTitle(sf::Text& Title, int& Mode)
 }
 bool getNewQuestion(Dict*& data, int mode, std::string& question, std::string& answer, std::vector<std::string>& wrong)
 {
+	wrong.clear();
 	if (mode == 1)// def guess word
 	{
 		std::vector<std::string> ret = data->defGuessWord();
@@ -342,7 +343,7 @@ void putChoise(std::vector<Button>& choises, std::string& answer, std::vector<st
 }
 void miniGame(Dict*& data, sf::Font& font,int mode)
 {
-	sf::RenderWindow window(sf::VideoMode(660, 450), "Mini Game", sf::Style::Default);
+	sf::RenderWindow window(sf::VideoMode(650, 450), "Mini Game", sf::Style::Default);
 	window.setFramerateLimit(12);
 
 	std::string question, answer;
@@ -361,8 +362,8 @@ void miniGame(Dict*& data, sf::Font& font,int mode)
 
 	choises.push_back(Button({ 280,100 }, { 35,180 }, "", font));
 	choises.push_back(Button({ 280,100 }, { 335,180 }, "", font));
-	choises.push_back(Button({ 280,100 }, { 35,350 }, "", font));
-	choises.push_back(Button({ 280,100 }, { 335,350 }, "", font));
+	choises.push_back(Button({ 280,100 }, { 35,340 }, "", font));
+	choises.push_back(Button({ 280,100 }, { 335,340 }, "", font));
 
 
 
@@ -450,7 +451,7 @@ bool addWordMenu(Dict*& data, sf::Font& font)
 
 	TextBox keyBox({ 280,80 }, { 10, 10 }, font);
 
-	TextBox definitionBox({ 280,300 }, { 10,10 }, font);
+	TextBox definitionBox({ 280,300 }, { 10,100 }, font);
 	std::string newDef;
 
 	while (window.isOpen())
@@ -509,7 +510,7 @@ bool defEditMenu(Definition*& def, Dict*& data, sf::Font& font)
 	TextBox keyBox({ 280,80 }, { 10, 10 }, font);
 	keyBox.inputString = def->word->data;
 
-	TextBox definitionBox({ 280,300 }, { 10,10 }, font);
+	TextBox definitionBox({ 280,400 }, { 10,10 }, font);
 	
 
 	std::string newDef =  def->data; 
