@@ -10,7 +10,7 @@ public:
     Button(const sf::Vector2f& size, const sf::Vector2f& position, const std::string& text, const sf::Font& font);
     //~Button();
     void draw(sf::RenderWindow& window) const;
-
+    void centerText();
     bool update(const sf::Vector2i& mousePos);
 
     sf::RectangleShape buttonShape;

@@ -15,8 +15,14 @@ Button::Button(const sf::Vector2f& size, const sf::Vector2f& position, const std
 	buttonText.setCharacterSize(24);
 	buttonText.setFillColor(sf::Color::White);
 
-	// Center the text
+	float padding = 10.0f; 
+	buttonText.setPosition(position.x + padding, position.y + padding);
+}
+void Button::centerText()
+{
 	sf::FloatRect textBounds = buttonText.getLocalBounds();
+	sf::Vector2f position = buttonShape.getPosition();
+	sf::Vector2f size = buttonShape.getSize();
 	buttonText.setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
 	buttonText.setPosition(position.x + size.x / 2.0f, position.y + size.y / 2.0f);
 }
@@ -325,17 +331,18 @@ void putChoise(std::vector<Button>& choises, std::string& answer, std::vector<st
 {
 	choises[rng].buttonText.setString(answer);
 	buttonTextWrap(choises[rng], choises[rng].buttonText.getString(), font);
+	int j = 0;
 	for (int i = 0; i < 4; i++)
 	{
 		if (i == rng)
 			continue;
-		choises[i].buttonText.setString(wrong[i]);
+		choises[i].buttonText.setString(wrong[j++]);
 		buttonTextWrap(choises[i], choises[i].buttonText.getString(), font);
 	}
 }
 void miniGame(Dict*& data, sf::Font& font,int mode)
 {
-	sf::RenderWindow window(sf::VideoMode(650, 450), "Mini Game", sf::Style::Default);
+	sf::RenderWindow window(sf::VideoMode(660, 450), "Mini Game", sf::Style::Default);
 	window.setFramerateLimit(12);
 
 	std::string question, answer;
@@ -351,18 +358,23 @@ void miniGame(Dict*& data, sf::Font& font,int mode)
 	defBoxUpdate(questBox, question, font);
 
 	std::vector<Button> choises;
+
+	choises.push_back(Button({ 280,100 }, { 35,180 }, "", font));
+	choises.push_back(Button({ 280,100 }, { 335,180 }, "", font));
+	choises.push_back(Button({ 280,100 }, { 35,350 }, "", font));
+	choises.push_back(Button({ 280,100 }, { 335,350 }, "", font));
+
+
+
 	for (int i = 0; i < 4; i++)
 	{
-		choises.push_back(Button({ 280,100 }, { 0,0 }, "", font));
+		choises[i].buttonText.setFillColor(sf::Color::Black);
 		choises[i].defaultColor = sf::Color::White;
 		choises[i].hoverColor = sf::Color(218, 218, 218);
 		choises[i].clickColor = sf::Color(155, 155, 155);
 	}
+
 	int rng = rand() % 4;
-	choises[0].buttonShape.setPosition({ 35,180 });
-	choises[1].buttonShape.setPosition({ 335,180 });
-	choises[2].buttonShape.setPosition({ 35,350 });
-	choises[3].buttonShape.setPosition({ 335,350 });
 
 	putChoise(choises, answer, wrong, rng, font);
 
@@ -390,14 +402,23 @@ void miniGame(Dict*& data, sf::Font& font,int mode)
 			clicked = 3;
 
 		if (clicked == rng)
-			choises[clicked].defaultColor = sf::Color(32, 201, 170);		
+		{
+			choises[clicked].defaultColor = sf::Color(32, 201, 170);
+			choises[clicked].hoverColor = sf::Color(32, 201, 170);
+		}
 		else if (clicked != -1)
+		{
 			choises[clicked].defaultColor = sf::Color(238, 50, 69);
+			choises[clicked].hoverColor = sf::Color(238, 50, 69);
+		}
 
 		if (replay.update(relMousePos))
 		{
 			for (int i = 0; i < 4; i++)
+			{
 				choises[i].defaultColor = sf::Color::White;
+				choises[i].hoverColor = sf::Color(218, 218, 218);
+			}
 			rng = rand() % 4;
 			getNewQuestion(data, mode, question, answer, wrong);
 			questBox.inputString = question;
@@ -418,7 +439,7 @@ void miniGame(Dict*& data, sf::Font& font,int mode)
 
 bool addWordMenu(Dict*& data, sf::Font& font)
 {
-	sf::RenderWindow window(sf::VideoMode(400, 500), "New Word", sf::Style::Default);
+	sf::RenderWindow window(sf::VideoMode(300, 500), "New Word", sf::Style::Default);
 	window.setFramerateLimit(12);
 
 	spriteButton applyButton(window); applyButton.setPosition({ 200,420 });
@@ -451,6 +472,7 @@ bool addWordMenu(Dict*& data, sf::Font& font)
 			keyBox.updateTextBox(event);
 
 		}
+		window.clear(sf::Color(113, 149, 182));
 
 		defBoxUpdate(definitionBox, newDef, font);
 
@@ -512,7 +534,7 @@ bool defEditMenu(Definition*& def, Dict*& data, sf::Font& font)
 			//keyBox.updateTextBox(event);
 
 		}
-		window.clear(sf::Color::White);
+		window.clear(sf::Color(113, 149, 182));
 		defBoxUpdate(definitionBox, newDef, font);
 
 		if (applyButton.update(relMousePos))
