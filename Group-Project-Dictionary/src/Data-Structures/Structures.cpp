@@ -337,21 +337,23 @@ bool Dict::addFavorite(Word *&word, const std::string& FAVORITE_FILE) {
 	}
 	return false;
 }
-vector<string> Dict::viewFavorite(const std::string& FAVORITE_FILE) {
-	vector<string> fav;
+std::vector<std::string> Dict::viewFavorite(const std::string& FAVORITE_FILE) {
+	std::vector<std::string> fav;
 	std::ifstream infile(FAVORITE_FILE);
 
 	if (!infile.is_open()) return fav;
-	string temp;
+	std::string temp;
 	while (getline(infile, temp, '\n')) {
 		fav.push_back(temp);
+	}
 	infile.close();
 	return fav;
 }
-bool Dict::deleteFavorite(Word*& word, const std::string& FAVORITE_FILE) {
+
+bool Dict::deleteFavorite(Word * &word, const std::string & FAVORITE_FILE) {
 	std::ifstream infile(FAVORITE_FILE);
-	string temp;
-	vector<string> fav;
+	std::string temp;
+	std::vector < std:: string > fav;
 
 	if (!infile.is_open()) return false;
 
@@ -365,8 +367,8 @@ bool Dict::deleteFavorite(Word*& word, const std::string& FAVORITE_FILE) {
 
 	std::ofstream outfile(FAVORITE_FILE);
 	if (!outfile.is_open()) return false;
-	for (string x : fav) {
-		outfile << x << endl;
+	for (std::string x : fav) {
+		outfile << x << '\n';
 	}
 	outfile.close();
 	return true;

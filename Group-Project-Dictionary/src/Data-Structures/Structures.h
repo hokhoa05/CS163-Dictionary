@@ -122,11 +122,11 @@ struct Dict {
 	/*
 		return true if edit successfully, false if not
 	*/
-	vector<string> Dict::viewFavorite(const std::string& FAVORITE_FILE);
+	std::vector<std::string> viewFavorite(const std::string& FAVORITE_FILE);
 	/*
 		read all words in favorite list, push in a vector and return it
 	*/
-	bool Dict::deleteFavorite(Word*& word, const std::string& FAVORITE_FILE);
+	bool deleteFavorite(Word*& word, const std::string& FAVORITE_FILE);
 	/*
 		read words in favorite list, check if it is the one to be deleted, change isFavorite and rewrite new list
 	*/
