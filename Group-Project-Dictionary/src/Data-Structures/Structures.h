@@ -144,6 +144,9 @@ struct Dict {
 		second string is true definition for the word
 		next 3 strings are wrong
 	*/
+
+	void saveBackup(const std::string& backupFileName) const;
+	void resetFromBackup(const std::string& backupFileName);
 };
 
 struct History {
@@ -152,7 +155,10 @@ struct History {
 
 	std::vector<Word*> wordlist;
 
-	void saveWordlistIntoFile(const std::string& hisfile, std::vector<Word*> search);
-	void loadWordfromfile(const std::string& hisfile);
+	void saveWordListToFile(const std::string& HISTORY_FILE) const;
+	void addWordToHistory(Word* word);
+	void loadWordListFromFile(const std::string& HISTORY_FILE);
+	void clearHistory();
+
 };
 
