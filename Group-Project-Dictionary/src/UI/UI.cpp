@@ -278,9 +278,9 @@ std::string wrapText(std::string& text, sf::Font& font, unsigned int characterSi
 
 bool defBoxUpdate(TextBox& defBox, std::string newDef, sf::Font& font)
 {
+	defBox.inputString = newDef;
 	newDef = wrapText(newDef, font, defBox.text.getCharacterSize(), defBox.textBoxShape.getSize().x);
 	defBox.text.setString(newDef);
-	defBox.inputString = newDef;
 	return true;
 }
 bool buttonTextWrap(Button& button, std::string text, sf::Font& font)
