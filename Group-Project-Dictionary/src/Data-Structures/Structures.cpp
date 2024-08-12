@@ -217,7 +217,8 @@ void Dict:: loadWordlistFromfile(const std::string& filename) {
 	infile.close();
 }
 
-History::History() {}
+History::History() = default;
+
 
 History::~History() {
 	for (auto word : wordlist) {
@@ -225,44 +226,40 @@ History::~History() {
 	}
 }
 
-void History::saveWordlistIntoFile(const std::string& hisfile, std::vector<Word*> search) {
-	std::ofstream outfile(hisfile);
+void History::saveWordListToFile(const std::string& HISTORY_FILE) const {
+	std::ofstream outfile(HISTORY_FILE);
 	if (!outfile.is_open()) {
-		std::cerr << "Cannot open" << hisfile << '\n';
+		std::cerr << "Cannot open" << HISTORY_FILE << '\n';
 		return;
 	}
 
-	for (auto word : search) {
-		outfile << word->data;
+	for (auto word : wordlist) {
 		for (auto def : word->defs) {
-			outfile << '\t' << def->data;
+			outfile << word << '\t' << def << '\n';
 		}
 	}
-
 	std::cout << "Saving word into file successfully" << '\n';
 	outfile.close();
 }
 
-void History::loadWordfromfile(const std::string& hisfile) {
-	std::ifstream infile(hisfile);
+void History::loadWordListFromFile(const std::string& HISTORY_FILE) {
+	std::ifstream infile(HISTORY_FILE);
 	if (!infile.is_open()) {
-		std::cerr << "Cannot open" << hisfile << '\n';
+		std::cerr << "Cannot open" << HISTORY_FILE << '\n';
 		return;
 	}
 
 	std::string line;
-	while (getline(infile, line)) {
-		std::istringstream iss(line);
-		std::string wordData;
-		iss >> wordData;
-		Word* newWord = new Word(wordData);
+	while (std::getline(infile, line))
+	{
+		size_t tabPos = line.find("\t");
+		if (tabPos != std::string::npos) {
 
-		std::string defData;
-		while (iss >> defData) {
-			Definition* newDef = new Definition(defData);
-			newWord->defs.push_back(newDef);
+			std::string words_word = line.substr(0, tabPos);
+			std::string defs_def = line.substr(tabPos + 1);
+			Word* new_word = new Word(words_word);
+			new_word->defs.push_back(new Definition(defs_def));
 		}
-		this->wordlist.push_back(newWord);
 	}
 
 	std::cout << "Loading wordlist from file successfully" << '\n';
@@ -425,3 +422,51 @@ std::vector<std::string> Dict::wordGuessDef() {
 	}
 	return res;
 }
+
+void Dict::saveBackup(const std::string& backupFileName) const
+{
+	std::ofstream backupFile(backupFileName);
+	if(!backupFile.is_open())
+	{
+		std::cout << "Unable to create backup file" << '\n';
+	}
+	for(auto words_word : allWords)
+	{
+		for(auto defs_def : words_word->defs)
+		{
+			backupFile << words_word->data << '\t' << defs_def->data << '\n';
+		}
+	}
+	backupFile.close();
+	std::cout << "Backup saved successfully." << '\n';
+}
+
+void Dict::resetFromBackup(const std::string& backupFileName)
+{
+	std::ifstream backupFile(backupFileName);
+	if (!backupFile) std::cout << "Unable to open backup file." << '\n';
+	std::string line;
+	while (std::getline(backupFile, line))
+	{
+		size_t tabPos = line.find("\t");
+		if (tabPos != std::string::npos) {
+			std::string words_word = line.substr(0, tabPos);
+			std::string defs_def = line.substr(tabPos + 1);
+			addWordAndDef(words_word, defs_def);
+		}
+	}
+	backupFile.close();
+	std::cout << "Dictionary reset from backup successfully." << '\n';
+}
+
+
+void History::addWordToHistory(Word* word)
+{
+	wordlist.insert(wordlist.begin(), word);
+}
+
+void History::clearHistory()
+{
+	wordlist.clear();
+}
+
