@@ -45,7 +45,7 @@ std::string normalize(const std::string& a); //
 /*
 * return a normalized string of a (use lowercase latin characters and numbers)
 * example:
-* normalize("Kho*&AD") -> "khoad" 
+* normalize("Kho  AD") -> "khoad" 
 */
 bool isPrintable(char x);
 /*
@@ -53,7 +53,7 @@ bool isPrintable(char x);
 	else return False
 */
 struct Dict {
-	Dict(const std::string &dir);
+	Dict(const std::string& _dir);
 	~Dict();
 	Trie<Word*>* trieDef = nullptr;
 	/*
@@ -71,6 +71,7 @@ struct Dict {
 	/*
 		vector of all of words
 	*/
+	std::string dir; //direction to data folder
 	Definition* addDefinition(const std::string &d);
 	/*
 		add a definition into Dictionary and words create definition into trie
@@ -126,7 +127,7 @@ struct Dict {
 	/*
 		return 
 	*/
-	bool addFavorite(Word* &word, const std::string& FAVORITE_FILE);
+	bool addFavorite(Word*& word);
 	/*
 		return true if add successfully, false if cannot open file
 	*/
@@ -135,11 +136,11 @@ struct Dict {
 	/*
 		return true if edit successfully, false if not
 	*/
-	std::vector<std::string> viewFavorite(const std::string& FAVORITE_FILE);
+	std::vector<std::string> viewFavorite();
 	/*
 		read all words in favorite list, push in a vector and return it
 	*/
-	bool deleteFavorite(Word*& word, const std::string& FAVORITE_FILE);
+	bool deleteFavorite(Word*& word);
 	/*
 		read words in favorite list, check if it is the one to be deleted, change isFavorite and rewrite new list
 	*/
@@ -157,9 +158,26 @@ struct Dict {
 		second string is true definition for the word
 		next 3 strings are wrong
 	*/
+	void resetDataFiles();
+	/*
+		call resetDataFiles() to reset all the data and reset the Data.txt from Backup.txt
+	*/
+	void saveData();
+};
+void resetData(Dict*& data);
+/*
+	call resetData(data) to reset the data
+*/
+struct History {
+	History();
+	~History();
 
-	void saveBackup(const std::string& backupFileName) const;
-	void resetFromBackup(const std::string& backupFileName);
+	std::vector<Word*> wordlist;
+
+	void saveWordListToFile(const std::string& HISTORY_FILE) const;
+	void addWordToHistory(Word* word);
+	void static loadWordListFromFile(const std::string& HISTORY_FILE);
+	void clearHistory();
 
 	
 	void static overwriteFile(const std::string& sourceFilePath, const std::string& destFilePath);

@@ -56,6 +56,10 @@ int mainMenu(Dict*& data)
 	DropdownMenu dropdown({ 300, 50 }, { 270, 327 }, font, "Main Button");
 	suggestDropdown(dropdown);
 
+	sf::Sprite* starred = new sf::Sprite;
+	*starred = favoriteButton.clickedSprite;
+	sf::Sprite* hate = new sf::Sprite;
+	*hate = favoriteButton.defaultSprite;
 	int k = 0;
 	std::string defString;
 	bool startSearch = false;
@@ -83,6 +87,19 @@ int mainMenu(Dict*& data)
 		}
 		windowMain.clear(backGroundColor);
 		/////////////////////////////////////////////////////////////////
+
+		if (showFavoriteButton.update(relMousePos))
+		{
+			searchBox.inputString = buttonMenu(data, font, 1);
+			startSearch = true;
+		}
+
+		if (historyButton.update(relMousePos))
+		{
+			searchBox.inputString = buttonMenu(data, font, 2);
+			startSearch = true;
+		}
+
 		if (startSearch)
 		{
 			result.clear();
@@ -106,9 +123,23 @@ int mainMenu(Dict*& data)
 			{
 				searchBox.inputString = resultWord->data;
 				defString = resultWord->defs[k]->data;
+				updateFavoriteButton(favoriteButton, *starred, *hate, resultWord);
 			}
 		}
 
+		if (favoriteButton.update(relMousePos) && resultWord)
+		{
+			if (resultWord->isFavorite)
+			{
+				data->deleteFavorite(resultWord);
+				updateFavoriteButton(favoriteButton, *starred, *hate, resultWord);
+			}
+			else
+			{
+				data->addFavorite(resultWord);
+				updateFavoriteButton(favoriteButton, *starred, *hate, resultWord);
+			}
+		}
 
 		if (defSearchMode)
 			TitleTex.setString("Search By Definition");
@@ -119,15 +150,11 @@ int mainMenu(Dict*& data)
 			defSearchMode = !defSearchMode;
 		if (datasetButton.update(relMousePos))
 			datasetMenu(data, font);
-		favoriteButton.update(relMousePos);
+
+
 
 		if (addWordButton.update(relMousePos))
 			addWordMenu(data, font);
-
-		showFavoriteButton.update(relMousePos);
-
-		historyButton.update(relMousePos);
-
 		if (deleteButton.update(relMousePos) && resultWord)
 			data->deleteWord(resultWord);
 
@@ -140,6 +167,7 @@ int mainMenu(Dict*& data)
 			resultWord = randomDef->word;
 			defString = randomDef->data;
 			searchBox.inputString = resultWord->data;
+			updateFavoriteButton(favoriteButton, *starred, *hate, resultWord);
 		}
 		if (minigame1.update(relMousePos))
 			miniGame(data, font, 1);
@@ -203,5 +231,7 @@ int bugNet()
 
 	return EXIT_SUCCESS;
 }
+// can there be duplicate in favorite?
+//
 
 

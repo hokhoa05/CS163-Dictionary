@@ -92,9 +92,12 @@ void updateTitle(sf::Text& Title, int& Mode);
 bool getNewQuestion(Dict*& data, int mode, std::string& question, std::string& answer, std::vector<std::string>& wrong);
 void miniGame(Dict*& data, sf::Font& font,int mode);
 //std::string defSearchwindow(Dict*& data, sf::Font& font);
-bool datasetMenu(Dict*& data, sf::Font& font);
+std::string getFavFileName(const std::string& dataFileName);
+std::string buttonMenu(Dict*& data, sf::Font& font,int mode);
+std::string datasetMenu(Dict*& data, sf::Font& font);
 bool addWordMenu(Dict*& data, sf::Font& font);
 bool defEditMenu(Definition*& def,Dict*& data, sf::Font& font);
 int mainMenu(Dict*& data);
+void updateFavoriteButton(spriteButton& favoriteButton, sf::Sprite& starred ,sf::Sprite& hate,Word*& word);
 
 int bugNet();

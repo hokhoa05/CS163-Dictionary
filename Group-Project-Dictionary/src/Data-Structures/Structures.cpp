@@ -33,13 +33,13 @@ Definition::~Definition() {
 	//std::cerr << "Deleted Definition\n";
 }
 
-
 Dict::Dict(const std::string &dir) :history() {
 	trieWord = new Trie<Word*>(PRINTABLE, nullptr);
 	trieDef = new Trie<Word*>(PRINTABLE, nullptr);
 	loadWordlistFromfile(dir);
 }
 Dict::~Dict() {
+	saveData();
 	trieDef->clear();
 	trieWord->clear();
 	for (auto def : allDefs)
@@ -300,8 +300,8 @@ std::vector<Word*> Dict::searchByKey(const std::string& prefix) const {
 	std::vector<Word*> results = trieWord->searchByKey(x);
 	return results;
 }
-bool Dict::addFavorite(Word *&word, const std::string& FAVORITE_FILE) {
-	std::ofstream outfile(FAVORITE_FILE, std::ios::app); // Open in append mode
+bool Dict::addFavorite(Word *&word) {
+	std::ofstream outfile(dir + "Favorite.txt", std::ios::app); // Open in append mode
 
 	if (!outfile.is_open()) {
 		return false;
@@ -310,13 +310,13 @@ bool Dict::addFavorite(Word *&word, const std::string& FAVORITE_FILE) {
 		outfile << word->data << '\n';  // Add the word and a newline
 		word->isFavorite = true;
 		outfile.close();
-		return true;
+		return true;	
 	}
 	return false;
 }
-std::vector<std::string> Dict::viewFavorite(const std::string& FAVORITE_FILE) {
+std::vector<std::string> Dict::viewFavorite() {
 	std::vector<std::string> fav;
-	std::ifstream infile(FAVORITE_FILE);
+	std::ifstream infile(dir + "Favorite.txt");
 
 	if (!infile.is_open()) return fav;
 	std::string temp;
@@ -327,8 +327,8 @@ std::vector<std::string> Dict::viewFavorite(const std::string& FAVORITE_FILE) {
 	return fav;
 }
 
-bool Dict::deleteFavorite(Word * &word, const std::string & FAVORITE_FILE) {
-	std::ifstream infile(FAVORITE_FILE);
+bool Dict::deleteFavorite(Word * &word) {
+	std::ifstream infile(dir + "Favorite.txt");
 	std::string temp;
 	std::vector < std:: string > fav;
 
@@ -342,11 +342,12 @@ bool Dict::deleteFavorite(Word * &word, const std::string & FAVORITE_FILE) {
 	}
 	infile.close();
 
-	std::ofstream outfile(FAVORITE_FILE);
+	std::ofstream outfile(dir + "Favorite.txt");
 	if (!outfile.is_open()) return false;
 	for (std::string x : fav) {
 		outfile << x << '\n';
 	}
+	word->isFavorite = false;
 	outfile.close();
 	return true;
 
@@ -403,47 +404,48 @@ std::vector<std::string> Dict::wordGuessDef() {
 	return res;
 }
 
-void Dict::saveBackup(const std::string& backupFileName) const
-{
-	std::ofstream backupFile(backupFileName);
-	if(!backupFile.is_open())
-	{
-		std::cout << "Unable to create backup file" << '\n';
-		return;
-	}
-	for(auto words_word : allWords)
-	{
-		for(auto defs_def : words_word->defs)
-		{
-			backupFile << words_word->data << '\t' << defs_def->data << '\n';
-		}
-	}
-	backupFile.close();
-	std::cout << "Backup saved successfully." << '\n';
-}
+void Dict::resetDataFiles() {
+	std::ofstream delTextFile;
+	delTextFile.open(dir + "Favorite.txt", std::ofstream::out | std::ofstream::trunc);
+	delTextFile.close();
 
-void Dict::resetFromBackup(const std::string& backupFileName)
-{
-	std::ifstream backupFile(backupFileName);
-	if (!backupFile)
-	{
-		std::cout << "Unable to open backup file." << '\n';
-		return;
-	}
+	delTextFile.open(dir + "History.txt", std::ofstream::out | std::ofstream::trunc);
+	delTextFile.close();
+	
+	delTextFile.open(dir + "Data.txt", std::ofstream::out | std::ofstream::trunc);
+	delTextFile.close();
+
+	std::ifstream inputBackup(dir + "Backup.txt");
+	std::ofstream outputData(dir + "Data.txt");	
 	std::string line;
-	while (std::getline(backupFile, line))
-	{
-		size_t tabPos = line.find("\t");
-		if (tabPos != std::string::npos) {
-			std::string words_word = line.substr(0, tabPos);
-			std::string defs_def = line.substr(tabPos + 1);
-			addWordAndDef(words_word, defs_def);
+	while (std::getline(inputBackup, line)) {
+		std::vector<std::string> str = split(line, '\t');
+		if ((int)str.size() < 2)
+			continue;
+		outputData << str[0] << '\t' << str[1] << '\n';
+	}
+	
+	outputData.close();
+	inputBackup.close();
+}
+void Dict::saveData() {
+	std::ofstream output(dir + "Data.txt");
+	if (!output.is_open()) {
+		std::cerr << "Cannot open file Data.txt (SaveData function)\n";
+	}
+	for (auto w : allWords) {
+		for (auto d : w->defs) {
+			output << w->data << '\t' << d->data << '\n';
 		}
 	}
-	backupFile.close();
-	std::cout << "Dictionary reset from backup successfully." << '\n';
+	output.close();
 }
-
+void resetData(Dict*& data) {
+	data->resetDataFiles();
+	std::string dir = data->dir;
+	delete data;
+	data = new Dict(dir);
+}
 
 
 void Dict::overwriteFile(const std::string& sourceFilePath, const std::string& destFilePath)

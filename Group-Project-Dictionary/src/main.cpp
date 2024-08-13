@@ -8,6 +8,7 @@
 
 int main() {
 	Dict* data = new Dict(EMOJI_FILE);
+
 	mainMenu(data);
 	delete data;
 	return 0;
