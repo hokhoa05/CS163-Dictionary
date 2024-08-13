@@ -2,15 +2,34 @@
 #include<string>
 const std::string PRINTABLE = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!”#$%&'()*+, -./:;?@[\\]^_`{|}~";
 const int SEARCH_LIMIT = 10;
-const std::string ENG_ENG_FILE = "./data/eng-eng/Data.txt";
-const std::string ENG_VIE_FILE = "./data/eng-vie/Data.txt";
-const std::string VIE_ENG_FILE = "./data/vie-eng/Data.txt";
-const std::string EMOJI_FILE = "./data/emojis/Data.txt";
-const std::string SLANG_FILE = "./data/slang/Data.txt";
-const std::string ENG_ENG_FAV_FILE = "./data/eng-eng/Favorite.txt";
-const std::string ENG_VIE_FAV_FILE = "./data/eng-vie/Favorite.txt";
-const std::string VIE_ENG_FAV_FILE = "./data/vie-eng/Favorite.txt";
-const std::string EMOJI_FAV_FILE = "./data/emojis/Favorite.txt";
-const std::string SLANG_FAV_FILE = "./data/slang/Favorite.txt";
-const std::string BACKUP_FILE = "Backup.txt";
-const std::string HISTORY_FILE = "History.txt";
+// 0 - Data, 1 - Favorite, 2 - Backup (For reset), 3 - History
+const std::string ENG_ENG_FILE[4] = {
+	"./data/eng-eng/Data.txt",
+	"./data/eng-eng/Favorite.txt",
+	"./data/eng-eng/Backup.txt",
+	"./data/eng-eng/History.txt"
+};
+const std::string ENG_VIE_FILE[4] = {
+	"./data/eng-vie/Data.txt",
+	"./data/eng-vie/Favorite.txt",
+	"./data/eng-vie/Backup.txt",
+	"./data/eng-vie/History.txt"
+};
+const std::string VIE_ENG_FILE[4] = {
+	"./data/vie-eng/Data.txt",
+	"./data/vie-eng/Favorite.txt",
+	"./data/vie-eng/Backup.txt",
+	"./data/vie-eng/History.txt"
+};
+const std::string EMOJI_FILE[4] = {
+	"./data/emojis/Data.txt",
+	"./data/emojis/Favorite.txt",
+	"./data/emojis/Backup.txt",
+	"./data/emojis/History.txt"
+};
+const std::string SLANG_FILE[4] = {
+	"./data/slang/Data.txt",
+	"./data/slang/Favorite.txt",
+	"./data/slang/Backup.txt",
+	"./data/slang/History.txt"
+};
