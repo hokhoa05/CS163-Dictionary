@@ -8,7 +8,6 @@
 
 int main() {
 	Dict* data = new Dict(EMOJI_FILE);
-	data->history.addWordToHistory()
 	mainMenu(data);
 	delete data;
 	return 0;
