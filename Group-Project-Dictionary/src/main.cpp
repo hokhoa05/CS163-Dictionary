@@ -8,9 +8,8 @@
 
 int main() {
 	Dict* data = new Dict(EMOJI_FILE);
-
-	data->hiswords->saveWordListToFile(HISTORY_FILE);
-	data->hiswords->clearHistory();
+	data->history.addWordToHistory()
+	mainMenu(data);
 	delete data;
 	return 0;
 }

@@ -34,11 +34,10 @@ Definition::~Definition() {
 }
 
 
-Dict::Dict(const std::string &dir) {
+Dict::Dict(const std::string &dir) :history() {
 	trieWord = new Trie<Word*>(PRINTABLE, nullptr);
 	trieDef = new Trie<Word*>(PRINTABLE, nullptr);
 	loadWordlistFromfile(dir);
-	hiswords = new History();
 }
 Dict::~Dict() {
 	trieDef->clear();
@@ -54,8 +53,6 @@ Dict::~Dict() {
 	trieWord = nullptr;
 	delete trieDef;
 	trieDef = nullptr;
-	delete hiswords;
-	hiswords = nullptr;
 }
 
 int editDistance(const std::string& a, const std::string& b) {
@@ -217,49 +214,32 @@ void Dict:: loadWordlistFromfile(const std::string& filename) {
 	infile.close();
 }
 
-History::History() = default;
 
-
-History::~History() {
-	for (auto word : wordlist) {
-		delete word;
-	}
-}
-
-void History::saveWordListToFile(const std::string& HISTORY_FILE) const {
+void Dict::History::saveWordListToFile(const std::string& HISTORY_FILE) const {
 	std::ofstream outfile(HISTORY_FILE);
 	if (!outfile.is_open()) {
 		std::cerr << "Cannot open" << HISTORY_FILE << '\n';
 		return;
 	}
 
-	for (auto word : wordlist) {
-		for (auto def : word->defs) {
-			outfile << word << '\t' << def << '\n';
-		}
+	for (const std::string& word : wordlist) {
+		outfile << word << '\n';
 	}
 	std::cout << "Saving word into file successfully" << '\n';
 	outfile.close();
 }
 
-void History::loadWordListFromFile(const std::string& HISTORY_FILE) {
+void Dict::History::loadWordListFromFile(const std::string& HISTORY_FILE) const{
 	std::ifstream infile(HISTORY_FILE);
 	if (!infile.is_open()) {
 		std::cerr << "Cannot open" << HISTORY_FILE << '\n';
 		return;
 	}
 
-	std::string line;
-	while (std::getline(infile, line))
+	std::string word;
+	while (std::getline(infile, word))
 	{
-		size_t tabPos = line.find("\t");
-		if (tabPos != std::string::npos) {
-
-			std::string words_word = line.substr(0, tabPos);
-			std::string defs_def = line.substr(tabPos + 1);
-			Word* new_word = new Word(words_word);
-			new_word->defs.push_back(new Definition(defs_def));
-		}
+		wordlist.push_back((word));
 	}
 
 	std::cout << "Loading wordlist from file successfully" << '\n';
@@ -302,8 +282,8 @@ bool Dict::deleteWord(Word *word) {
 		std::cerr << "Error: Delete word trie\n";
 		return false;
 	}
-	if (std::find(hiswords->wordlist.begin(), hiswords->wordlist.end(), word) != hiswords->wordlist.end()) {
-		hiswords->wordlist.erase(std::find(hiswords->wordlist.begin(), hiswords->wordlist.end(), word));
+	if (std::find(history.wordlist.begin(), history.wordlist.end(), word) != history.wordlist.end()) {
+		history.wordlist.erase(std::find(history.wordlist.begin(), history.wordlist.end(), word));
 	}
 	delete word;
 	word = nullptr;
@@ -465,13 +445,33 @@ void Dict::resetFromBackup(const std::string& backupFileName)
 }
 
 
-void History::addWordToHistory(Word* word)
+
+void Dict::overwriteFile(const std::string& sourceFilePath, const std::string& destFilePath)
 {
-	wordlist.insert(wordlist.begin(), word);
+	std::ifstream sourceFile(sourceFilePath, std::ios::binary);
+	std::ofstream destFile(destFilePath, std::ios::binary | std::ios::trunc);
+
+	if (!sourceFile.is_open() || !destFile.is_open()) {
+		std::cerr << "Failed to overwrite file." << '\n';
+		return;
+	}
+
+	destFile << sourceFile.rdbuf();
+
+	if (sourceFile.fail() || destFile.fail()) {
+		std::cerr << "Error copying file contents!" << '\n';
+		return;
+	}
+	std::cout << "File overwritten successfully!" << '\n';
+	sourceFile.close();
+	destFile.close();
 }
 
-void History::clearHistory()
+void Dict::History::viewHistory(const std::string& HISTORY_FILE) const
 {
-	wordlist.clear();
+	loadWordListFromFile(HISTORY_FILE);
+
 }
+
+
 
