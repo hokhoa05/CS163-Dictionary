@@ -157,7 +157,7 @@ struct History {
 
 	void saveWordListToFile(const std::string& HISTORY_FILE) const;
 	void addWordToHistory(Word* word);
-	void loadWordListFromFile(const std::string& HISTORY_FILE);
+	void static loadWordListFromFile(const std::string& HISTORY_FILE);
 	void clearHistory();
 
 };

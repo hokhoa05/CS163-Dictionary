@@ -12,3 +12,5 @@ const std::string ENG_VIE_FAV_FILE = "./data/eng-vie/Favorite.txt";
 const std::string VIE_ENG_FAV_FILE = "./data/vie-eng/Favorite.txt";
 const std::string EMOJI_FAV_FILE = "./data/emojis/Favorite.txt";
 const std::string SLANG_FAV_FILE = "./data/slang/Favorite.txt";
+const std::string BACKUP_FILE = "Backup.txt";
+const std::string HISTORY_FILE = "History.txt";

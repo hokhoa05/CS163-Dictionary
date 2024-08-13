@@ -429,6 +429,7 @@ void Dict::saveBackup(const std::string& backupFileName) const
 	if(!backupFile.is_open())
 	{
 		std::cout << "Unable to create backup file" << '\n';
+		return;
 	}
 	for(auto words_word : allWords)
 	{
@@ -444,7 +445,11 @@ void Dict::saveBackup(const std::string& backupFileName) const
 void Dict::resetFromBackup(const std::string& backupFileName)
 {
 	std::ifstream backupFile(backupFileName);
-	if (!backupFile) std::cout << "Unable to open backup file." << '\n';
+	if (!backupFile)
+	{
+		std::cout << "Unable to open backup file." << '\n';
+		return;
+	}
 	std::string line;
 	while (std::getline(backupFile, line))
 	{
