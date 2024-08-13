@@ -131,12 +131,12 @@ int mainMenu(Dict*& data)
 		{
 			if (resultWord->isFavorite)
 			{
-				data->deleteFavorite(resultWord, "");
+				data->deleteFavorite(resultWord);
 				updateFavoriteButton(favoriteButton, *starred, *hate, resultWord);
 			}
 			else
 			{
-				data->addFavorite(resultWord, "");
+				data->addFavorite(resultWord);
 				updateFavoriteButton(favoriteButton, *starred, *hate, resultWord);
 			}
 		}
