@@ -15,7 +15,7 @@ Button::Button(const sf::Vector2f& size, const sf::Vector2f& position, const std
 	buttonText.setCharacterSize(24);
 	buttonText.setFillColor(sf::Color::White);
 
-	float padding = 10.0f; 
+	float padding = 10.0f;
 	buttonText.setPosition(position.x + padding, position.y + padding);
 }
 void Button::centerText()
@@ -328,7 +328,7 @@ bool getNewQuestion(Dict*& data, int mode, std::string& question, std::string& a
 
 }
 
-void putChoise(std::vector<Button>& choises, std::string& answer, std::vector<std::string>& wrong, int rng,sf::Font font)
+void putChoise(std::vector<Button>& choises, std::string& answer, std::vector<std::string>& wrong, int rng, sf::Font font)
 {
 	choises[rng].buttonText.setString(answer);
 	buttonTextWrap(choises[rng], choises[rng].buttonText.getString(), font);
@@ -341,7 +341,7 @@ void putChoise(std::vector<Button>& choises, std::string& answer, std::vector<st
 		buttonTextWrap(choises[i], choises[i].buttonText.getString(), font);
 	}
 }
-void miniGame(Dict*& data, sf::Font& font,int mode)
+void miniGame(Dict*& data, sf::Font& font, int mode)
 {
 	sf::RenderWindow window(sf::VideoMode(650, 450), "Mini Game", sf::Style::Default);
 	window.setFramerateLimit(12);
@@ -383,7 +383,7 @@ void miniGame(Dict*& data, sf::Font& font,int mode)
 	{
 		sf::Event event;
 		sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-		sf::Vector2f relMousePos = static_cast<sf::Vector2f>(mousePos); 
+		sf::Vector2f relMousePos = static_cast<sf::Vector2f>(mousePos);
 
 		while (window.pollEvent(event))
 		{
@@ -393,7 +393,7 @@ void miniGame(Dict*& data, sf::Font& font,int mode)
 		window.clear(sf::Color(113, 149, 182));
 		int clicked = -1;
 
-		if(choises[0].update(mousePos))
+		if (choises[0].update(mousePos))
 			clicked = 0;
 		else if (choises[1].update(mousePos))
 			clicked = 1;
@@ -511,9 +511,9 @@ bool defEditMenu(Definition*& def, Dict*& data, sf::Font& font)
 	keyBox.inputString = def->word->data;
 
 	TextBox definitionBox({ 280,400 }, { 10,10 }, font);
-	
 
-	std::string newDef =  def->data; 
+
+	std::string newDef = def->data;
 	definitionBox.inputString = newDef;
 
 	while (window.isOpen())
@@ -559,7 +559,118 @@ bool defEditMenu(Definition*& def, Dict*& data, sf::Font& font)
 	}
 	return true;
 }
-bool datasetMenu(Dict*& data, sf::Font& font)
+
+std::string getFavFileName(const std::string& dataFileName) {
+	if (dataFileName == "./data/eng-eng/Data.txt") {
+		return "./data/eng-eng/Favorite.txt";
+	}
+	else if (dataFileName == "./data/eng-vie/Data.txt") {
+		return "./data/eng-vie/Favorite.txt";
+	}
+	else if (dataFileName == "./data/vie-eng/Data.txt") {
+		return "./data/vie-eng/Favorite.txt";
+	}
+	else if (dataFileName == "./data/emojis/Data.txt") {
+		return "./data/emojis/Favorite.txt";
+	}
+	else if (dataFileName == "./data/slang/Data.txt") {
+		return "./data/slang/Favorite.txt";
+	}
+	else {
+		return ""; // Return an empty string or handle the case where the input is invalid
+	}
+}
+void putString(std::vector<Button>& choises, std::vector<std::string> data, int& k, sf::Font font)
+{
+	int n = choises.size();
+	int m = data.size();
+
+	for (int i = 0; i < n; i++)
+	{
+		if (k + i < m)
+		{
+			choises[i].buttonText.setString(data[k + i]);
+			buttonTextWrap(choises[i], choises[i].buttonText.getString(), font);
+		}
+		else
+			choises[i].buttonText.setString("");
+	}
+	k += n;
+}
+std::string buttonMenu(Dict*& data, sf::Font& font, int mode)
+{
+	std::string name;
+	if (mode == 1)
+		name = "Favorite";
+	else
+		name = "History";
+
+	sf::RenderWindow window(sf::VideoMode(530, 610), name, sf::Style::Default);
+	window.setFramerateLimit(12);
+
+	spriteButton nextButton(window); nextButton.setPosition({ 470,550 });
+	nextButton.loadTextures("src/UI/sprite/ButtonNext_normal.png", "src/UI/sprite/ButtonNext_status.png", "src/UI/sprite/ButtonNext_pressed.png");
+
+	std::vector<std::string> strings; // = ???
+	int n = strings.size();
+	int k = 0;
+
+	std::vector<Button> choise;
+	for (int i = 0; i < 12; i++)
+	{
+
+
+		if (i < 6)
+		{
+			float pos = static_cast<float>((90 * i) + 10);
+			choise.push_back(Button({ 250,80 }, { 10,pos }, "", font));
+		}
+		else
+		{
+			float pos = static_cast<float>((90 * (i - 6)) + 10);
+			choise.push_back(Button({ 250,80 }, { 270,pos }, "", font));
+		}
+		choise[i].buttonText.setFillColor(sf::Color::Black);
+		choise[i].defaultColor = sf::Color::White;
+		choise[i].hoverColor = sf::Color(218, 218, 218);
+		choise[i].clickColor = sf::Color(155, 155, 155);
+	}
+	putString(choise, strings, k, font);
+
+	while (window.isOpen())
+	{
+		sf::Event event;
+		sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+		sf::Vector2f relMousePos = static_cast<sf::Vector2f>(mousePos);
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+				window.close();
+		}
+		window.clear(sf::Color(113, 149, 182));
+
+		if (nextButton.update(relMousePos))
+		{
+			if (k >= n)
+				k = 0;
+			putString(choise, strings, k, font);
+		}
+		for (int i = 0; i < 12; i++)
+			if (choise[i].update(mousePos) && (i + k - 12) < n)
+			{
+				window.close();
+				return strings[k - 12 + i];
+			}
+
+
+		for (int i = 0; i < 12; i++)
+			choise[i].draw(window);
+		nextButton.draw();
+		window.display();
+	}
+	return "";
+}
+std::string datasetMenu(Dict*& data, sf::Font& font)
 {
 	sf::RenderWindow window(sf::VideoMode(300, 500), "Dataset", sf::Style::Default);
 	window.setFramerateLimit(12);
@@ -570,7 +681,7 @@ bool datasetMenu(Dict*& data, sf::Font& font)
 	Datasets.addButton("EMOJI");
 	Datasets.addButton("SLANG");
 	Datasets.isOpen = true;
-	delete data;
+	///////////////////////////////////////////////
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -584,20 +695,25 @@ bool datasetMenu(Dict*& data, sf::Font& font)
 		switch (i)
 		{
 		case 0:
+			delete data;
 			data = new Dict(ENG_ENG_FILE);
-			return true;
+			return ENG_ENG_FILE;
 		case 1:
+			delete data;
 			data = new Dict(ENG_VIE_FILE);
-			return true;
+			return ENG_VIE_FILE;
 		case 2:
+			delete data;
 			data = new Dict(VIE_ENG_FILE);
-			return true;
+			return VIE_ENG_FILE;
 		case 3:
+			delete data;
 			data = new Dict(EMOJI_FILE);
-			return true;
+			return EMOJI_FILE;
 		case 4:
+			delete data;
 			data = new Dict(SLANG_FILE);
-			return true;
+			return SLANG_FILE;
 		default:
 			break;
 		}
@@ -605,5 +721,18 @@ bool datasetMenu(Dict*& data, sf::Font& font)
 		Datasets.draw(window);
 		window.display();
 	};
-	return false;
+	return "";
+}
+void updateFavoriteButton(spriteButton& favoriteButton, sf::Sprite& starred, sf::Sprite& hate, Word*& word)
+{
+	if (word->isFavorite)
+	{
+		favoriteButton.defaultSprite = starred;
+		favoriteButton.clickedSprite = hate;
+	}
+	else
+	{
+		favoriteButton.defaultSprite = starred;
+		favoriteButton.clickedSprite = hate;
+	}
 }
