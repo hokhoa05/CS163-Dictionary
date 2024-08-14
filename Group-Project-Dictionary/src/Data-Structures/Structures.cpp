@@ -32,7 +32,8 @@ Definition::Definition(const std::string& str) {
 Definition::~Definition() {
 	//std::cerr << "Deleted Definition\n";
 }
-Dict::Dict(const std::string &dir) {
+Dict::Dict(const std::string &_dir) {
+	dir = _dir;
 	trieWord = new Trie<Word*>(PRINTABLE, nullptr);
 	trieDef = new Trie<Word*>(PRINTABLE, nullptr);
 	loadWordlistFromfile(dir + "Data.txt");
