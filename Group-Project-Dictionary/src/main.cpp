@@ -7,7 +7,8 @@
 #include "UI/menu.h"
 
 int main() {
-	Dict* data = new Dict(SLANG_FILE);
+	Dict* data = new Dict(EMOJI_FILE);
+
 	mainMenu(data);
 	delete data;
 	return 0;

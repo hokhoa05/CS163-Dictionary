@@ -95,10 +95,22 @@ struct Dict {
 	/*
 		load a wordlist to dictionary by filename
 	*/
-	History* hiswords;
-	/*
-		saved history words
-	*/
+
+	struct History
+	{
+		std::vector<std::string>& wordlist;
+		void saveWordListToFile(const std::string& HISTORY_FILE) const;
+		void addWordToHistory(const std::string& word) const
+		{
+			wordlist.insert(wordlist.begin(), word);
+		}
+		void loadWordListFromFile(const std::string& HISTORY_FILE) const;
+		void viewHistory(const std::string& HISTORY_FILE) const;
+		void clearHistory() const
+		{
+			wordlist.clear();
+		}
+	}history;
 	bool deleteDefinition(Definition* def);
 	/*
 		delete a definition
@@ -119,6 +131,7 @@ struct Dict {
 	/*
 		return true if add successfully, false if cannot open file
 	*/
+
 	bool editDefinition(Word* word, Definition* oldDef, const std::string& newDef);
 	/*
 		return true if edit successfully, false if not
@@ -166,5 +179,8 @@ struct History {
 	void static loadWordListFromFile(const std::string& HISTORY_FILE);
 	void clearHistory();
 
+	
+	void static overwriteFile(const std::string& sourceFilePath, const std::string& destFilePath);
 };
+
 
