@@ -600,10 +600,20 @@ void putString(std::vector<Button>& choises, std::vector<std::string> data, int&
 std::string buttonMenu(Dict*& data, sf::Font& font, int mode)
 {
 	std::string name;
+	std::vector<std::string> strings; 
 	if (mode == 1)
+	{
+		strings = data->viewFavorite();
 		name = "Favorite";
+	}
 	else
+	{
+		data->history.loadWordListFromFile(data->dir + "History.txt");
+		strings = data->history.wordlist;
 		name = "History";
+	}	
+	int n = strings.size(); 
+	int k = 0;
 
 	sf::RenderWindow window(sf::VideoMode(530, 610), name, sf::Style::Default);
 	window.setFramerateLimit(12);
@@ -611,9 +621,7 @@ std::string buttonMenu(Dict*& data, sf::Font& font, int mode)
 	spriteButton nextButton(window); nextButton.setPosition({ 470,550 });
 	nextButton.loadTextures("src/UI/sprite/ButtonNext_normal.png", "src/UI/sprite/ButtonNext_status.png", "src/UI/sprite/ButtonNext_pressed.png");
 
-	std::vector<std::string> strings; // = ???
-	int n = strings.size();
-	int k = 0;
+
 
 	std::vector<Button> choise;
 	for (int i = 0; i < 12; i++)
@@ -672,7 +680,7 @@ std::string buttonMenu(Dict*& data, sf::Font& font, int mode)
 }
 std::string datasetMenu(Dict*& data, sf::Font& font)
 {
-	sf::RenderWindow window(sf::VideoMode(300, 500), "Dataset", sf::Style::Default);
+	sf::RenderWindow window(sf::VideoMode(300, 600), "Dataset", sf::Style::Default);
 	window.setFramerateLimit(12);
 	DropdownMenu Datasets({ 300, 100 }, { 0, 0 }, font, "mainButton");
 	Datasets.addButton("ENG-ENG");
@@ -680,6 +688,7 @@ std::string datasetMenu(Dict*& data, sf::Font& font)
 	Datasets.addButton("VIET-ENG");
 	Datasets.addButton("EMOJI");
 	Datasets.addButton("SLANG");
+	Datasets.addButton("RESET CURRENT");
 	Datasets.isOpen = true;
 	///////////////////////////////////////////////
 	while (window.isOpen())
@@ -714,6 +723,8 @@ std::string datasetMenu(Dict*& data, sf::Font& font)
 			delete data;
 			data = new Dict(SLANG_FILE);
 			return SLANG_FILE;
+		case 5:
+			/ ;
 		default:
 			break;
 		}
