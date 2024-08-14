@@ -98,6 +98,7 @@ struct Dict {
 
 	struct History
 	{
+		History();
 		std::vector<std::string>& wordlist;
 		void saveWordListToFile(const std::string& HISTORY_FILE) const;
 		void addWordToHistory(const std::string& word) const
@@ -110,7 +111,7 @@ struct Dict {
 		{
 			wordlist.clear();
 		}
-	}history;
+	} history;
 	bool deleteDefinition(Definition* def);
 	/*
 		delete a definition
@@ -168,19 +169,5 @@ void resetData(Dict*& data);
 /*
 	call resetData(data) to reset the data
 */
-struct History {
-	History();
-	~History();
-
-	std::vector<Word*> wordlist;
-
-	void saveWordListToFile(const std::string& HISTORY_FILE) const;
-	void addWordToHistory(Word* word);
-	void static loadWordListFromFile(const std::string& HISTORY_FILE);
-	void clearHistory();
-
-	
-	void static overwriteFile(const std::string& sourceFilePath, const std::string& destFilePath);
-};
 
 

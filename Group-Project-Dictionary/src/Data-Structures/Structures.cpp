@@ -32,8 +32,7 @@ Definition::Definition(const std::string& str) {
 Definition::~Definition() {
 	//std::cerr << "Deleted Definition\n";
 }
-
-Dict::Dict(const std::string &dir) :history() {
+Dict::Dict(const std::string &dir) {
 	trieWord = new Trie<Word*>(PRINTABLE, nullptr);
 	trieDef = new Trie<Word*>(PRINTABLE, nullptr);
 	loadWordlistFromfile(dir);
@@ -448,32 +447,8 @@ void resetData(Dict*& data) {
 }
 
 
-void Dict::overwriteFile(const std::string& sourceFilePath, const std::string& destFilePath)
-{
-	std::ifstream sourceFile(sourceFilePath, std::ios::binary);
-	std::ofstream destFile(destFilePath, std::ios::binary | std::ios::trunc);
-
-	if (!sourceFile.is_open() || !destFile.is_open()) {
-		std::cerr << "Failed to overwrite file." << '\n';
-		return;
-	}
-
-	destFile << sourceFile.rdbuf();
-
-	if (sourceFile.fail() || destFile.fail()) {
-		std::cerr << "Error copying file contents!" << '\n';
-		return;
-	}
-	std::cout << "File overwritten successfully!" << '\n';
-	sourceFile.close();
-	destFile.close();
-}
-
 void Dict::History::viewHistory(const std::string& HISTORY_FILE) const
 {
 	loadWordListFromFile(HISTORY_FILE);
 
 }
-
-
-
