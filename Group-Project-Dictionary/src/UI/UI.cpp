@@ -608,8 +608,7 @@ std::string buttonMenu(Dict*& data, sf::Font& font, int mode)
 	}
 	else
 	{
-		data->history.loadWordListFromFile(data->dir + "History.txt");
-		strings = data->history.wordlist;
+		strings = data->viewHistory();
 		name = "History";
 	}	
 	int n = strings.size(); 

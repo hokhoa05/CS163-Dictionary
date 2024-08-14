@@ -71,6 +71,10 @@ struct Dict {
 	/*
 		vector of all of words
 	*/
+	std::vector<std::string> historyWord;
+	/*
+		vector of history
+	*/
 	std::string dir; //direction to data folder
 	Definition* addDefinition(const std::string &d);
 	/*
@@ -95,23 +99,26 @@ struct Dict {
 	/*
 		load a wordlist to dictionary by filename
 	*/
-
-	struct History
-	{
-		History();
-		std::vector<std::string>& wordlist;
-		void saveWordListToFile(const std::string& HISTORY_FILE) const;
-		void addWordToHistory(const std::string& word) const
-		{
-			wordlist.insert(wordlist.begin(), word);
-		}
-		void loadWordListFromFile(const std::string& HISTORY_FILE) const;
-		void viewHistory(const std::string& HISTORY_FILE) const;
-		void clearHistory() const
-		{
-			wordlist.clear();
-		}
-	} history;
+	void loadHistory();
+	/*
+		load history file from dir + "History.txt"
+	*/
+	void saveHistory();
+	/*
+		save history file to dir + "History.txt"
+	*/
+	void addHistory(Word* word);
+	/*
+		add a word into vector string historyWord 
+	*/
+	void clearHistory();
+	/*
+		clear all the history
+	*/
+	std::vector<std::string> viewHistory();
+	/*
+		return the historyWord
+	*/
 	bool deleteDefinition(Definition* def);
 	/*
 		delete a definition
