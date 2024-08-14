@@ -679,7 +679,7 @@ std::string buttonMenu(Dict*& data, sf::Font& font, int mode)
 }
 std::string datasetMenu(Dict*& data, sf::Font& font)
 {
-	sf::RenderWindow window(sf::VideoMode(300, 600), "Dataset", sf::Style::Default);
+	sf::RenderWindow window(sf::VideoMode(300, 500), "Dataset", sf::Style::Default);
 	window.setFramerateLimit(12);
 	DropdownMenu Datasets({ 300, 100 }, { 0, 0 }, font, "mainButton");
 	Datasets.addButton("ENG-ENG");
@@ -687,7 +687,6 @@ std::string datasetMenu(Dict*& data, sf::Font& font)
 	Datasets.addButton("VIET-ENG");
 	Datasets.addButton("EMOJI");
 	Datasets.addButton("SLANG");
-	Datasets.addButton("RESET CURRENT");
 	Datasets.isOpen = true;
 	///////////////////////////////////////////////
 	while (window.isOpen())
@@ -722,8 +721,6 @@ std::string datasetMenu(Dict*& data, sf::Font& font)
 			delete data;
 			data = new Dict(SLANG_FILE);
 			return SLANG_FILE;
-		case 5:
-			/ ;
 		default:
 			break;
 		}
@@ -742,7 +739,7 @@ void updateFavoriteButton(spriteButton& favoriteButton, sf::Sprite& starred, sf:
 	}
 	else
 	{
-		favoriteButton.defaultSprite = starred;
-		favoriteButton.clickedSprite = hate;
+		favoriteButton.defaultSprite = hate;
+		favoriteButton.clickedSprite = starred;
 	}
 }

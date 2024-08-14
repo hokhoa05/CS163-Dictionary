@@ -40,7 +40,6 @@ int mainMenu(Dict*& data)
 	spriteButton minigame2(windowMain); minigame2.setPosition({ 6,655 });
 	minigame2.loadTextures("src/UI/sprite/ButtonMini2.png", "src/UI/sprite/ButtonMini2_clicked.png", "src/UI/sprite/ButtonMini2_clicked.png");
 
-
 	sf::RectangleShape titleBox;
 	titleBox.setFillColor(sf::Color(32, 201, 170));
 	titleBox.setPosition({ 240,100 });
@@ -55,6 +54,7 @@ int mainMenu(Dict*& data)
 
 	DropdownMenu dropdown({ 300, 50 }, { 270, 327 }, font, "Main Button");
 	suggestDropdown(dropdown);
+	
 
 	sf::Sprite* starred = new sf::Sprite;
 	*starred = favoriteButton.clickedSprite;
@@ -124,6 +124,7 @@ int mainMenu(Dict*& data)
 				searchBox.inputString = resultWord->data;
 				defString = resultWord->defs[k]->data;
 				updateFavoriteButton(favoriteButton, *starred, *hate, resultWord);
+				data->addHistory(resultWord);
 			}
 		}
 
@@ -168,6 +169,7 @@ int mainMenu(Dict*& data)
 			defString = randomDef->data;
 			searchBox.inputString = resultWord->data;
 			updateFavoriteButton(favoriteButton, *starred, *hate, resultWord);
+			data->addHistory(resultWord);
 		}
 		if (minigame1.update(relMousePos))
 			miniGame(data, font, 1);

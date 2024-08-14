@@ -35,7 +35,7 @@ Definition::~Definition() {
 Dict::Dict(const std::string &dir) {
 	trieWord = new Trie<Word*>(PRINTABLE, nullptr);
 	trieDef = new Trie<Word*>(PRINTABLE, nullptr);
-	loadWordlistFromfile(dir);
+	loadWordlistFromfile(dir + "Data.txt");
 	loadHistory();
 }
 Dict::~Dict() {
