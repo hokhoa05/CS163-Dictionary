@@ -608,8 +608,7 @@ std::string buttonMenu(Dict*& data, sf::Font& font, int mode)
 	}
 	else
 	{
-		data->history.loadWordListFromFile(data->dir + "History.txt");
-		strings = data->history.wordlist;
+		strings = data->viewHistory();
 		name = "History";
 	}	
 	int n = strings.size(); 
@@ -680,7 +679,7 @@ std::string buttonMenu(Dict*& data, sf::Font& font, int mode)
 }
 std::string datasetMenu(Dict*& data, sf::Font& font)
 {
-	sf::RenderWindow window(sf::VideoMode(300, 600), "Dataset", sf::Style::Default);
+	sf::RenderWindow window(sf::VideoMode(300, 500), "Dataset", sf::Style::Default);
 	window.setFramerateLimit(12);
 	DropdownMenu Datasets({ 300, 100 }, { 0, 0 }, font, "mainButton");
 	Datasets.addButton("ENG-ENG");
@@ -688,7 +687,6 @@ std::string datasetMenu(Dict*& data, sf::Font& font)
 	Datasets.addButton("VIET-ENG");
 	Datasets.addButton("EMOJI");
 	Datasets.addButton("SLANG");
-	//Datasets.addButton("RESET CURRENT");
 	Datasets.isOpen = true;
 	///////////////////////////////////////////////
 	while (window.isOpen())
@@ -741,7 +739,7 @@ void updateFavoriteButton(spriteButton& favoriteButton, sf::Sprite& starred, sf:
 	}
 	else
 	{
-		favoriteButton.defaultSprite = starred;
-		favoriteButton.clickedSprite = hate;
+		favoriteButton.defaultSprite = hate;
+		favoriteButton.clickedSprite = starred;
 	}
 }
