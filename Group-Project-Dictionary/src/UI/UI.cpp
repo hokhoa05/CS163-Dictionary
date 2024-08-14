@@ -688,7 +688,7 @@ std::string datasetMenu(Dict*& data, sf::Font& font)
 	Datasets.addButton("VIET-ENG");
 	Datasets.addButton("EMOJI");
 	Datasets.addButton("SLANG");
-	Datasets.addButton("RESET CURRENT");
+	//Datasets.addButton("RESET CURRENT");
 	Datasets.isOpen = true;
 	///////////////////////////////////////////////
 	while (window.isOpen())
@@ -723,8 +723,6 @@ std::string datasetMenu(Dict*& data, sf::Font& font)
 			delete data;
 			data = new Dict(SLANG_FILE);
 			return SLANG_FILE;
-		case 5:
-			/ ;
 		default:
 			break;
 		}

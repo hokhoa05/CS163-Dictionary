@@ -39,6 +39,8 @@ int mainMenu(Dict*& data)
 	minigame1.loadTextures("src/UI/sprite/ButtonMinigame1.png", "src/UI/sprite/ButtonMini1_clicked.png", "src/UI/sprite/ButtonMini1_clicked.png");
 	spriteButton minigame2(windowMain); minigame2.setPosition({ 6,655 });
 	minigame2.loadTextures("src/UI/sprite/ButtonMini2.png", "src/UI/sprite/ButtonMini2_clicked.png", "src/UI/sprite/ButtonMini2_clicked.png");
+	spriteButton resetDatButton(windowMain); resetDatButton.setPosition({ 6,189 });
+	resetDatButton.loadTextures("src/UI/sprite/ButtonresetDat.png", "src/UI/sprite/ButtonResetDat_C.png", "src/UI/sprite/ButtonResetDat_C.png");
 
 
 	sf::RectangleShape titleBox;
