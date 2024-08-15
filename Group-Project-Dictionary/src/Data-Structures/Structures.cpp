@@ -248,7 +248,7 @@ bool Dict::deleteWord(Word *word) {
 		return false;
 	}
 	allWords.erase(std::find(allWords.begin(), allWords.end(), word));
-	if (trieWord->remove(word->data) != success) {
+	if (trieWord->remove(normalize(word->data)) != success) {
 		std::cerr << "Error: Delete word trie\n";
 		return false;
 	}
