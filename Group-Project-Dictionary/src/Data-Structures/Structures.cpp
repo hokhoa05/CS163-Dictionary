@@ -385,19 +385,7 @@ void Dict::resetDataFiles() {
 	
 	delTextFile.open(dir + "Data.txt", std::ofstream::out | std::ofstream::trunc);
 	delTextFile.close();
-
-	std::ifstream inputBackup(dir + "Backup.txt");
-	std::ofstream outputData(dir + "Data.txt");	
-	std::string line;
-	while (std::getline(inputBackup, line)) {
-		std::vector<std::string> str = split(line, '\t');
-		if ((int)str.size() < 2)
-			continue;
-		outputData << str[0] << '\t' << str[1] << '\n';
-	}
-	
-	outputData.close();
-	inputBackup.close();
+	historyWord.clear();
 }
 void Dict::saveData() {
 	std::ofstream output(dir + "Data.txt");
@@ -415,6 +403,19 @@ void resetData(Dict*& data) {
 	data->resetDataFiles();
 	std::string dir = data->dir;
 	delete data;
+
+	std::ifstream inputBackup(dir + "Backup.txt");
+	std::ofstream outputData(dir + "Data.txt");
+	std::string line;
+	while (std::getline(inputBackup, line)) {
+		std::vector<std::string> str = split(line, '\t');
+		if ((int)str.size() < 2)
+			continue;
+		outputData << str[0] << '\t' << str[1] << '\n';
+	}
+
+	outputData.close();
+	inputBackup.close();
 	data = new Dict(dir);
 }
 
