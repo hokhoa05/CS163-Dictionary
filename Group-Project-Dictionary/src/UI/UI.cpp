@@ -116,6 +116,14 @@ void TextBox::handleMouseClick(const sf::Vector2i& mousePos) {
 
 
 
+sf::Vector2f DropdownMenu::getSize()
+{
+	sf::Vector2f size{};
+	size.x = this->buttonSize.x;
+	size.y = this->buttonSize.y * this->buttons.size();
+	return size;
+}
+
 void DropdownMenu::addButton(const std::string& buttonText)
 {
 	sf::Vector2f buttonPosition = position + sf::Vector2f(0, buttons.size() * buttonSize.y);
@@ -560,26 +568,6 @@ bool defEditMenu(Definition*& def, Dict*& data, sf::Font& font)
 	return true;
 }
 
-std::string getFavFileName(const std::string& dataFileName) {
-	if (dataFileName == "./data/eng-eng/Data.txt") {
-		return "./data/eng-eng/Favorite.txt";
-	}
-	else if (dataFileName == "./data/eng-vie/Data.txt") {
-		return "./data/eng-vie/Favorite.txt";
-	}
-	else if (dataFileName == "./data/vie-eng/Data.txt") {
-		return "./data/vie-eng/Favorite.txt";
-	}
-	else if (dataFileName == "./data/emojis/Data.txt") {
-		return "./data/emojis/Favorite.txt";
-	}
-	else if (dataFileName == "./data/slang/Data.txt") {
-		return "./data/slang/Favorite.txt";
-	}
-	else {
-		return ""; // Return an empty string or handle the case where the input is invalid
-	}
-}
 void putString(std::vector<Button>& choises, std::vector<std::string> data, int& k, sf::Font font)
 {
 	int n = choises.size();
@@ -600,7 +588,7 @@ void putString(std::vector<Button>& choises, std::vector<std::string> data, int&
 std::string buttonMenu(Dict*& data, sf::Font& font, int mode)
 {
 	std::string name;
-	std::vector<std::string> strings; 
+	std::vector<std::string> strings;
 	if (mode == 1)
 	{
 		strings = data->viewFavorite();
@@ -610,8 +598,8 @@ std::string buttonMenu(Dict*& data, sf::Font& font, int mode)
 	{
 		strings = data->viewHistory();
 		name = "History";
-	}	
-	int n = strings.size(); 
+	}
+	int n = strings.size();
 	int k = 0;
 
 	sf::RenderWindow window(sf::VideoMode(530, 610), name, sf::Style::Default);
@@ -677,7 +665,7 @@ std::string buttonMenu(Dict*& data, sf::Font& font, int mode)
 	}
 	return "";
 }
-std::string datasetMenu(Dict*& data, sf::Font& font)
+std::string datasetMenu(Dict*& data, sf::Font& font, std::string originalSet)
 {
 	sf::RenderWindow window(sf::VideoMode(300, 500), "Dataset", sf::Style::Default);
 	window.setFramerateLimit(12);
@@ -704,23 +692,23 @@ std::string datasetMenu(Dict*& data, sf::Font& font)
 		case 0:
 			delete data;
 			data = new Dict(ENG_ENG_FILE);
-			return ENG_ENG_FILE;
+			return "English - English";
 		case 1:
 			delete data;
 			data = new Dict(ENG_VIE_FILE);
-			return ENG_VIE_FILE;
+			return "English - Vietnamese";
 		case 2:
 			delete data;
 			data = new Dict(VIE_ENG_FILE);
-			return VIE_ENG_FILE;
+			return "Vietnamese - English";
 		case 3:
 			delete data;
 			data = new Dict(EMOJI_FILE);
-			return EMOJI_FILE;
+			return "Emoji";
 		case 4:
 			delete data;
 			data = new Dict(SLANG_FILE);
-			return SLANG_FILE;
+			return "Slangs";
 		default:
 			break;
 		}
@@ -728,7 +716,7 @@ std::string datasetMenu(Dict*& data, sf::Font& font)
 		Datasets.draw(window);
 		window.display();
 	};
-	return "";
+	return originalSet;
 }
 void updateFavoriteButton(spriteButton& favoriteButton, sf::Sprite& starred, sf::Sprite& hate, Word*& word)
 {
@@ -742,4 +730,11 @@ void updateFavoriteButton(spriteButton& favoriteButton, sf::Sprite& starred, sf:
 		favoriteButton.defaultSprite = hate;
 		favoriteButton.clickedSprite = starred;
 	}
+}
+
+bool isClickOutsideRectangle(const sf::Vector2i& mousePosition, sf::Vector2f size, const sf::Vector2f& position )
+{
+	sf::FloatRect rect(position.x, position.y, size.x, size.y);
+	return !rect.contains(static_cast<sf::Vector2f>(mousePosition));
+
 }
