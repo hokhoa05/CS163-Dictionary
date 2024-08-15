@@ -52,6 +52,7 @@ public:
      DropdownMenu(const sf::Vector2f& buttonSize, const sf::Vector2f& position, const sf::Font& font, const std::string& mainButtonText)
      : buttonSize(buttonSize), position(position), font(font), isOpen(false), mainButton(buttonSize, position, mainButtonText, font) {}
      
+     sf::Vector2f getSize();
      void addButton(const std::string& buttonText);
 
      void draw(sf::RenderWindow& window) const;
@@ -92,12 +93,12 @@ void updateTitle(sf::Text& Title, int& Mode);
 bool getNewQuestion(Dict*& data, int mode, std::string& question, std::string& answer, std::vector<std::string>& wrong);
 void miniGame(Dict*& data, sf::Font& font,int mode);
 //std::string defSearchwindow(Dict*& data, sf::Font& font);
-std::string getFavFileName(const std::string& dataFileName);
+//std::string getFavFileName(const std::string& dataFileName);
 std::string buttonMenu(Dict*& data, sf::Font& font,int mode);
-std::string datasetMenu(Dict*& data, sf::Font& font);
+std::string datasetMenu(Dict*& data, sf::Font& font,std::string originalSet);
 bool addWordMenu(Dict*& data, sf::Font& font);
 bool defEditMenu(Definition*& def,Dict*& data, sf::Font& font);
 int mainMenu(Dict*& data);
 void updateFavoriteButton(spriteButton& favoriteButton, sf::Sprite& starred ,sf::Sprite& hate,Word*& word);
-
+bool isClickOutsideRectangle(const sf::Vector2i& mousePosition, sf::Vector2f size, const sf::Vector2f& position);
 int bugNet();

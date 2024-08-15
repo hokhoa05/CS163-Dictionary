@@ -417,6 +417,7 @@ void resetData(Dict*& data) {
 	outputData.close();
 	inputBackup.close();
 	data = new Dict(dir);
+	data->clearHistory();
 }
 
 

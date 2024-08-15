@@ -43,19 +43,22 @@ int mainMenu(Dict*& data)
 	resetDatButton.loadTextures("src/UI/sprite/ButtonresetDat.png", "src/UI/sprite/ButtonResetDat_C.png", "src/UI/sprite/ButtonResetDat_C.png");
 
 	sf::RectangleShape titleBox;
-	titleBox.setFillColor(sf::Color(32, 201, 170));
+	titleBox.setFillColor(sf::Color(59, 189, 166));
 	titleBox.setPosition({ 240,100 });
-	titleBox.setSize({ 520,100 });
+	titleBox.setSize({ 520,122 });
 
 	sf::Text TitleTex;
-	TitleTex.setFont(font); TitleTex.setCharacterSize(48); TitleTex.setFillColor(sf::Color::Black);
-	TitleTex.setPosition(280.0f, 110.0f);
+	TitleTex.setFont(font); TitleTex.setCharacterSize(40); TitleTex.setFillColor(sf::Color::White);
+	TitleTex.setPosition(266.0f, 110.0f);
+
+	sf::Text datasetText; datasetText.setCharacterSize(20); datasetText.setFillColor(sf::Color::Black);
+	datasetText.setFont(font); datasetText.setPosition({ 266,176 });
 
 	TextBox searchBox({ 520, 50 }, { 240, 280 }, font);
 	TextBox definitionBox({ 520,280 }, { 240,380 }, font);
 
-	DropdownMenu dropdown({ 300, 50 }, { 270, 327 }, font, "Main Button");
-	suggestDropdown(dropdown);
+	DropdownMenu dropdown({ 410, 50 }, { 270, 327 }, font, "Main Button");
+	
 	
 
 	sf::Sprite* starred = new sf::Sprite;
@@ -64,6 +67,7 @@ int mainMenu(Dict*& data)
 	*hate = favoriteButton.defaultSprite;
 	int k = 0;
 	std::string defString;
+	datasetText.setString("Emoji");
 	bool startSearch = false;
 	bool defSearchMode = false;
 	Word* resultWord = nullptr;
@@ -93,13 +97,34 @@ int mainMenu(Dict*& data)
 		if (showFavoriteButton.update(relMousePos))
 		{
 			searchBox.inputString = buttonMenu(data, font, 1);
-			startSearch = true;
+			//startSearch = true;
+			result = data->searchByKey(searchBox.inputString);
+			if (result[0]->data == searchBox.inputString)
+			{
+				resultWord = result[0];
+				defString = resultWord->defs[0]->data;
+				searchBox.inputString = resultWord->data;
+				updateFavoriteButton(favoriteButton, *starred, *hate, resultWord);
+				data->addHistory(resultWord);
+			}
+			else
+				startSearch = true;
 		}
 
 		if (historyButton.update(relMousePos))
 		{
 			searchBox.inputString = buttonMenu(data, font, 2);
-			startSearch = true;
+			result = data->searchByKey(searchBox.inputString);
+			if (result[0]->data == searchBox.inputString)
+			{
+				resultWord = result[0];
+				defString = resultWord->defs[0]->data;
+				searchBox.inputString = resultWord->data;
+				updateFavoriteButton(favoriteButton, *starred, *hate, resultWord);
+				data->addHistory(resultWord);
+			}
+			else
+				startSearch = true;
 		}
 
 		if (startSearch)
@@ -129,7 +154,8 @@ int mainMenu(Dict*& data)
 				data->addHistory(resultWord);
 			}
 		}
-
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && isClickOutsideRectangle(mousePos, dropdown.getSize(), dropdown.position))
+			dropdown.isOpen = false;
 		if (favoriteButton.update(relMousePos) && resultWord)
 		{
 			if (resultWord->isFavorite)
@@ -152,9 +178,10 @@ int mainMenu(Dict*& data)
 		if (changeModeButton.update(relMousePos))
 			defSearchMode = !defSearchMode;
 		if (datasetButton.update(relMousePos))
-			datasetMenu(data, font);
+			datasetText.setString(datasetMenu(data, font,datasetText.getString()));
 
-
+		if (resetDatButton.update(relMousePos))
+			resetData(data);
 
 		if (addWordButton.update(relMousePos))
 			addWordMenu(data, font);
@@ -190,8 +217,9 @@ int mainMenu(Dict*& data)
 		changeModeButton.draw();
 		datasetButton.draw();
 		favoriteButton.draw();
-
+		resetDatButton.draw();
 		windowMain.draw(titleBox);
+		windowMain.draw(datasetText);
 		windowMain.draw(TitleTex);
 		searchBox.drawTextBox(windowMain);
 		definitionBox.drawTextBox(windowMain);
