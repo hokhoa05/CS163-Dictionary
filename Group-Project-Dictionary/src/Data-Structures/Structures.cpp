@@ -416,6 +416,7 @@ void resetData(Dict*& data) {
 	std::string dir = data->dir;
 	delete data;
 	data = new Dict(dir);
+	data->clearHistory();
 }
 
 

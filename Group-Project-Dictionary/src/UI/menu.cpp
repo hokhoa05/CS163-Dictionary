@@ -154,7 +154,8 @@ int mainMenu(Dict*& data)
 		if (datasetButton.update(relMousePos))
 			datasetMenu(data, font);
 
-
+		if (resetDatButton.update(relMousePos))
+			resetData(data);
 
 		if (addWordButton.update(relMousePos))
 			addWordMenu(data, font);
@@ -190,7 +191,7 @@ int mainMenu(Dict*& data)
 		changeModeButton.draw();
 		datasetButton.draw();
 		favoriteButton.draw();
-
+		resetDatButton.draw();
 		windowMain.draw(titleBox);
 		windowMain.draw(TitleTex);
 		searchBox.drawTextBox(windowMain);
