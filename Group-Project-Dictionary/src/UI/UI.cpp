@@ -548,7 +548,7 @@ bool defEditMenu(Definition*& def, Dict*& data, sf::Font& font)
 
 		if (applyButton.update(relMousePos))
 		{
-			def->data = newDef;
+			data->editDefinition(def->word, def, newDef);
 			window.close();
 		}
 		if (deleteDef.update(relMousePos))
