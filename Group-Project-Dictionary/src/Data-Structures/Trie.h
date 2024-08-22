@@ -42,7 +42,7 @@ struct Trie {
 		If we use integer this should be 0
 	*/
 	
-	TrieNode<DataType>* root; //Root node of Trie
+	TrieNode<DataType>* root = nullptr; //Root node of Trie
 
 	Trie(const std::string& str, const DataType& _defaultData);
 	/*
