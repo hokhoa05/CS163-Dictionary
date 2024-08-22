@@ -235,6 +235,9 @@ bool Dict::deleteDefinition(Definition* def) {
 	}
 	def->word->defs.erase(std::find(def->word->defs.begin(), def->word->defs.end(), def));
 	allDefs.erase(std::find(allDefs.begin(), allDefs.end(), def));
+	if (def->word->defs.empty()) {
+		deleteWord(def->word);
+	}
 	delete def;
 	def = nullptr;
 	return true;
