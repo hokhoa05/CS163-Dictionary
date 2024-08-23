@@ -242,6 +242,30 @@ bool Dict::deleteDefinition(Definition* def) {
 	def = nullptr;
 	return true;
 }
+bool Dict::deleteDefinitionUltil(Definition* def)
+{
+	std::string str = def->data;
+	for (std::string x : split(str, ' ')) {
+		x = normalize(x);
+		if ((int)x.size() < 3)
+			continue;
+		Word* tmp = nullptr;
+		if (trieDef->find(x, tmp) == non_exist) {
+			std::cerr << "Error: definition is not exist\n";
+			return false;
+		}
+		if (std::find(tmp->defs.begin(), tmp->defs.end(), def) == tmp->defs.end()) {
+			std::cerr << "Error: cannot find definition having the word\n";
+			return false;
+		}
+		tmp->defs.erase(std::find(tmp->defs.begin(), tmp->defs.end(), def));
+	}
+	def->word->defs.erase(std::find(def->word->defs.begin(), def->word->defs.end(), def));
+	allDefs.erase(std::find(allDefs.begin(), allDefs.end(), def));
+	delete def;
+	def = nullptr;
+	return true;
+}
 bool Dict::deleteWord(Word *word) {
 	while (!word->defs.empty()) {
 		deleteDefinition(word->defs.back());
@@ -327,7 +351,7 @@ bool Dict::deleteFavorite(Word * &word) {
 
 }
 bool Dict::editDefinition(Word* word, Definition* oldDef, const std::string& newDef) {
-	if (!deleteDefinition(oldDef)) {
+	if (!deleteDefinitionUltil(oldDef)) {
 		return false;
 	}
 

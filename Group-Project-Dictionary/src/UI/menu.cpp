@@ -58,8 +58,8 @@ int mainMenu(Dict*& data)
 	TextBox definitionBox({ 520,280 }, { 240,380 }, font);
 
 	DropdownMenu dropdown({ 410, 50 }, { 270, 327 }, font, "Main Button");
-	
-	
+
+
 
 	sf::Sprite* starred = new sf::Sprite;
 	*starred = favoriteButton.clickedSprite;
@@ -178,7 +178,7 @@ int mainMenu(Dict*& data)
 		if (changeModeButton.update(relMousePos))
 			defSearchMode = !defSearchMode;
 		if (datasetButton.update(relMousePos))
-			datasetText.setString(datasetMenu(data, font,datasetText.getString()));
+			datasetText.setString(datasetMenu(data, font, datasetText.getString()));
 
 		if (resetDatButton.update(relMousePos))
 			resetData(data);
@@ -186,10 +186,32 @@ int mainMenu(Dict*& data)
 		if (addWordButton.update(relMousePos))
 			addWordMenu(data, font);
 		if (deleteButton.update(relMousePos) && resultWord)
+		{
 			data->deleteWord(resultWord);
+			resultWord = nullptr;
+			defString = "";
+			searchBox.inputString = "";
+			updateFavoriteButton(favoriteButton, *starred, *hate, resultWord);
+		}
 
 		if (editButton.update(relMousePos) && resultWord)
-			defEditMenu(resultWord->defs[k], data, font);
+		{
+			int l = defEditMenu(resultWord->defs[k], data, font);
+			if (l == 2)
+			{
+				resultWord = nullptr;
+				defString = "";
+				searchBox.inputString = "";
+				updateFavoriteButton(favoriteButton, *starred, *hate, resultWord);
+			}
+			else if (l == 1)
+			{
+				k = 0;
+				defString = resultWord->defs[k]->data;
+			}
+			else
+				defString = resultWord->defs[k]->data;
+		}
 
 		if (randomButton.update(relMousePos))
 		{

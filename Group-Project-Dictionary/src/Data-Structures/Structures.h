@@ -123,6 +123,10 @@ struct Dict {
 	/*
 		delete a definition
 	*/
+	bool deleteDefinitionUltil(Definition* def);
+	/*
+		delete a definition
+	*/
 	bool deleteWord(Word* word);
 	/*
 		delete a word

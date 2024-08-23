@@ -97,7 +97,7 @@ void miniGame(Dict*& data, sf::Font& font,int mode);
 std::string buttonMenu(Dict*& data, sf::Font& font,int mode);
 std::string datasetMenu(Dict*& data, sf::Font& font,std::string originalSet);
 bool addWordMenu(Dict*& data, sf::Font& font);
-bool defEditMenu(Definition*& def,Dict*& data, sf::Font& font);
+int defEditMenu(Definition*& def,Dict*& data, sf::Font& font);
 int mainMenu(Dict*& data);
 void updateFavoriteButton(spriteButton& favoriteButton, sf::Sprite& starred ,sf::Sprite& hate,Word*& word);
 bool isClickOutsideRectangle(const sf::Vector2i& mousePosition, sf::Vector2f size, const sf::Vector2f& position);

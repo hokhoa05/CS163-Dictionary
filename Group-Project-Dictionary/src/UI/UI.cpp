@@ -500,7 +500,7 @@ bool addWordMenu(Dict*& data, sf::Font& font)
 	}
 	return true;
 }
-bool defEditMenu(Definition*& def, Dict*& data, sf::Font& font)
+int defEditMenu(Definition*& def, Dict*& data, sf::Font& font)
 {
 
 	sf::RenderWindow window(sf::VideoMode(300, 500), "Edit Definition", sf::Style::Default);
@@ -553,8 +553,12 @@ bool defEditMenu(Definition*& def, Dict*& data, sf::Font& font)
 		}
 		if (deleteDef.update(relMousePos))
 		{
+			int z = def->word->defs.size();
 			data->deleteDefinition(def);
 			window.close();
+			if (z == 1)
+				return 2;
+			return 1;
 		}
 		if (cancelButton.update(relMousePos))
 			window.close();
@@ -565,7 +569,7 @@ bool defEditMenu(Definition*& def, Dict*& data, sf::Font& font)
 		definitionBox.drawTextBox(window);
 		window.display();
 	}
-	return true;
+	return 0;
 }
 
 void putString(std::vector<Button>& choises, std::vector<std::string> data, int& k, sf::Font font)
@@ -720,7 +724,12 @@ std::string datasetMenu(Dict*& data, sf::Font& font, std::string originalSet)
 }
 void updateFavoriteButton(spriteButton& favoriteButton, sf::Sprite& starred, sf::Sprite& hate, Word*& word)
 {
-	if (word->isFavorite)
+	if (!word)
+	{
+		favoriteButton.defaultSprite = hate;
+		favoriteButton.clickedSprite = starred;
+	}
+	else if (word->isFavorite)
 	{
 		favoriteButton.defaultSprite = starred;
 		favoriteButton.clickedSprite = hate;
