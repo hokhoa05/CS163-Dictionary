@@ -3,7 +3,6 @@
 
 struct Word;
 struct Definition;
-struct History;
 
 
 
