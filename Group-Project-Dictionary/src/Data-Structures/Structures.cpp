@@ -268,7 +268,7 @@ bool Dict::deleteDefinitionUltil(Definition* def)
 }
 bool Dict::deleteWord(Word *word) {
 	while (!word->defs.empty()) {
-		deleteDefinition(word->defs.back());
+		deleteDefinitionUltil(word->defs.back());
 	}
 	if (std::find(allWords.begin(), allWords.end(), word) == allWords.end()) {
 		std::cerr << "Error: Find word in allWords (deleteWord)";
