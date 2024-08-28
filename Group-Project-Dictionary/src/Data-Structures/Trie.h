@@ -30,7 +30,7 @@ TrieNode<DataType>::TrieNode(int numNext, DataType data) {
 template<class DataType>
 struct Trie {
 
-	int alphaID[256];//ID of the charater using in trie
+	int alphaID[300];//ID of the charater using in trie
 	
 	int numNext; //Number of branch of each node
 
