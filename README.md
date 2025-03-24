@@ -9,11 +9,7 @@ This project is a dictionary application that supports eng-eng, eng-vie, vie-eng
 
 ## Building the Project
 
-1. Open the solution file 
-
-Group-Project-Dictionary.sln
-
- in Visual Studio.
+1. Open the solution file Group-Project-Dictionary.sln in Visual Studio.
 2. Build the project using the desired configuration (Debug/Release and x64/Win32).
 
 ## Project Configuration
